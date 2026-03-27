@@ -11,14 +11,11 @@ export default function Header() {
         <header className={styles["header"]}>
             <div className={styles["header-left"]}>
                 <div className={styles["logo"]}>
-                    <span style={{fontWeight: 'bold', fontSize: '24px', color: '#fff'}}>RAUM</span>
+                    <span style={{fontWeight: 'bold', fontSize: '24px', color: '#fff'}}>AVISHU</span>
                 </div>
             </div>
 
             <div className={styles["header-mid"]}>
-                <a href="/shop">SHOP</a>
-                <a href="/collections">COLLECTIONS</a>
-                <a href="/about">ABOUT</a>
             </div>
 
             <div className={styles["header-right"]}>

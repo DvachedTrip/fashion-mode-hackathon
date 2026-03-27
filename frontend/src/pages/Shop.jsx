@@ -56,6 +56,7 @@ export default function Home() {
         </button>
       </section>
 
+
       {/* Product Grid */}
       <main className={styles.productGrid}>
         {PRODUCTS.map((product) => (
@@ -84,6 +85,8 @@ export default function Home() {
           </div>
         ))}
       </main>
+
+
 
       {/* Footer Pagination */}
       <footer className={styles.footer}>
