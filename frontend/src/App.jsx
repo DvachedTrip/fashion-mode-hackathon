@@ -9,31 +9,39 @@ import Footer from "./pages/Footer"
 import Home from "./pages/Home"
 import Shop from "./pages/Shop"
 
-
+import { CartProvider } from './components/CartContext';
+import { ThemeProvider } from './components/ThemeContext';
+import Sidebar from './pages/Sidebar';
 
 function App() {
-
   return (
-    <div className={styles["all"]}>
-      <Header />
-      <main>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/shop" element={<Shop />} />
-        </Routes>
-      </main>
+    <ThemeProvider>
+      <CartProvider>
+        <div className={styles["all"]}>
+          <Header />
+          
+          <Sidebar />
 
-      <Footer />
-    </div>
+          <main>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/shop" element={<Shop />} />
+            </Routes>
+          </main>
+
+          <Footer />
+        </div>
+      </CartProvider>
+    </ThemeProvider>
   )
 }
-
 
 function AppWrapper() {
   return (
     <Router>
       <App />
-    </Router>  );
+    </Router>
+  );
 }
 
 export default AppWrapper;

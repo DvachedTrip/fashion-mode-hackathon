@@ -1,0 +1,77 @@
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: -400px; /* Скрыт за экраном */
+    width: 400px;
+    height: 100vh;
+    background: #fff;
+    z-index: 1000;
+    transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: -10px 0 30px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar.open {
+    right: 0; /* Выезжает */
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.2);
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s;
+    z-index: 999;
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.sidebar-header {
+    padding: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+}
+
+.sidebar-header h2 {
+    font-size: 14px;
+    letter-spacing: 2px;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.sidebar-content {
+    flex: 1;
+    padding: 30px;
+    font-size: 13px;
+    color: #888;
+}
+
+.sidebar-footer {
+    padding: 30px;
+    border-top: 1px solid #eee;
+}
+
+.checkout-btn {
+    width: 100%;
+    padding: 15px;
+    background: #000;
+    color: #fff;
+    border: none;
+    letter-spacing: 2px;
+    cursor: pointer;
+}

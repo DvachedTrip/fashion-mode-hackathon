@@ -1,58 +1,121 @@
 .header {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Распределяет лево, центр и право */
-  padding: 15px 40px; /* Отступы от краев */
-  background-color: #1a1a1a; /* Темный фон как на фото */
-  border-bottom: 1px solid #333; /* Тонкая линия снизу */
-  font-family: sans-serif; /* Или ваш шрифт */
+  justify-content: space-between;
+  padding: 15px 40px;
+  
+  /* Динамические цвета */
+  background-color: var(--bg-color);
+  border-bottom: 1px solid var(--border-color);
+  
+  font-family: sans-serif;
   text-transform: uppercase;
   font-size: 13px;
   letter-spacing: 0.5px;
+  transition: all 0.3s ease;
 }
 
 .header-left {
-  flex: 1; /* Чтобы логотип занимал свою долю пространства */
+  flex: 1;
 }
 
-.logo-img {
-  height: 24px; /* Настройте под ваш лого */
-  filter: invert(1); /* Если лого черный, сделаем его белым */
+.logo-text {
+  font-weight: 800;
+  font-size: 24px;
+  /* Логотип тоже меняет цвет */
+  color: var(--text-color); 
+  letter-spacing: -1px;
 }
 
 .header-mid {
   display: flex;
-  gap: 30px; /* Расстояние между пунктами меню */
+  gap: 30px;
   flex: 2;
-  justify-content: center; /* Центрирует основные ссылки */
+  justify-content: center;
+}
+
+.header-mid a {
+  color: var(--text-color);
+  text-decoration: none;
+  transition: opacity 0.2s;
 }
 
 .header-right {
   display: flex;
   gap: 20px;
   flex: 1;
-  justify-content: flex-end; /* Прижимает к правому краю */
+  justify-content: flex-end;
   align-items: center;
 }
 
-.header a {
-  color: #ffffff;
+.header-right a {
+  color: var(--text-color);
   text-decoration: none;
-  transition: opacity 0.2s;
 }
 
 .header a:hover {
-  opacity: 0.7;
+  opacity: 0.6;
 }
 
-/* Стили для переключателя темы [DARK / LIGHT] */
+/* Стили переключателя [ DARK / LIGHT ] */
 .theme-toggle {
-  color: #888 !important;
+  color: var(--dim-text); /* Скобки и разделитель "/" станут тусклыми */
+  font-size: 11px;
+  display: flex;
+  gap: 5px;
+  cursor: default;
+}
+
+.theme-active {
+  /* Тот режим, который выбран сейчас */
+  color: var(--text-color) !important;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.theme-inactive {
+  /* Тот режим, на который можно нажать */
+  color: var(--dim-text);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.theme-inactive:hover {
+  color: var(--text-color);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 40px;
+  background-color: var(--bg-color); /* Привязка к переменной */
+  border-bottom: 1px solid var(--border-color); /* Привязка к переменной */
+  transition: all 0.3s ease;
+}
+
+.logo-text, .header a {
+  color: var(--text-color); /* Привязка к переменной */
+  text-decoration: none;
+}
+
+.theme-toggle {
+  color: var(--dim-text);
   font-size: 11px;
 }
 
 .theme-active {
-  color: #fff;
+  color: var(--text-color) !important;
   text-decoration: underline;
-  text-underline-offset: 4px;
+  font-weight: bold;
+}
+
+.theme-inactive {
+  cursor: pointer;
+}
+
+.theme-inactive:hover {
+  color: var(--text-color);
 }

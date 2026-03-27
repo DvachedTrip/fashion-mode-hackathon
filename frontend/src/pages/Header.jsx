@@ -1,6 +1,12 @@
 import styles from '../assets/css/Header.module.css';
+import { useCart } from '../components/CartContext';
+import { useTheme } from "../components/ThemeContext"
 
 export default function Header() {
+
+    const { toggleCart } = useCart();
+    const { theme, toggleTheme } = useTheme();
+
     return (
         <header className={styles["header"]}>
             <div className={styles["header-left"]}>
@@ -17,11 +23,27 @@ export default function Header() {
 
             <div className={styles["header-right"]}>
                 <div className={styles["theme-toggle"]}>
-                    [ <span className={styles["theme-active"]}>DARK</span> / LIGHT ]
+                    [ 
+                    <span 
+                        onClick={() => toggleTheme('dark')}
+                        className={theme === 'dark' ? styles["theme-active"] : styles["theme-inactive"]}
+                        
+                    >
+                        DARK
+                    </span> 
+                    / 
+                    <span 
+                        onClick={() => toggleTheme('light')}
+                        className={theme === 'light' ? styles["theme-active"] : styles["theme-inactive"]}
+    
+                    >
+                        LIGHT
+                    </span> 
+                    ]
                 </div>
                 <a href="/search">SEARCH</a>
                 <a href="/account">ACCOUNT</a>
-                <a href="/bag">BAG</a>
+                <a onClick={(e) => { e.preventDefault(); toggleCart(); }} href="#">BAG</a>
             </div>
         </header>
     );
