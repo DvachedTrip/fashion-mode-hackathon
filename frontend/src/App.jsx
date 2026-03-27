@@ -7,6 +7,7 @@ import Header from "./pages/Header"
 import Footer from "./pages/Footer"
 
 import Home from "./pages/Home"
+import Shop from "./pages/Shop"
 
 
 
@@ -18,6 +19,7 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/shop" element={<Shop />} />
         </Routes>
       </main>
 
