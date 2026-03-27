@@ -1,30 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 import styles from '../assets/css/Shop.module.css';
 import { useTheme } from '../components/ThemeContext';
 
-const PRODUCTS = [
-  { id: 1, name: "MAVIS OVERSIZED TRENCH", price: "$345.00", image: "https://picsum.photos/seed/fashion1/800/1200", isNew: true },
-  { id: 2, name: "NAICA LEATHER JACKET", price: "$595.00", image: "https://picsum.photos/seed/fashion2/800/1200", isNew: true },
-  { id: 3, name: "ARLISE TRENCH COAT", price: "$325.00", image: "https://picsum.photos/seed/fashion3/800/1200" },
-  { id: 4, name: "ARBOR LEATHER JACKET", price: "$275.00", image: "https://picsum.photos/seed/fashion4/800/1200" },
-  { id: 5, name: "PRILLY OVERSIZED SHIRT", price: "$169.00", image: "https://picsum.photos/seed/fashion5/800/1200" },
-  { id: 6, name: "BEAUFILLE BAES CROP TOP", price: "$478.00", image: "https://picsum.photos/seed/fashion6/800/1200" },
-  { id: 7, name: "ROTATE OVERSIZED T-SHIRT", price: "$90.00", image: "https://picsum.photos/seed/fashion7/800/1200" },
-  { id: 8, name: "PELSO BARN JACKET", price: "$255.00", image: "https://picsum.photos/seed/fashion8/800/1200", isNew: true },
-  { id: 9, name: "PEORIA SUEDE BLAZER", price: "$275.00", image: "https://picsum.photos/seed/fashion9/800/1200" },
-  { id: 10, name: "IVA BLAZER", price: "$469.00", image: "https://picsum.photos/seed/fashion10/800/1200" },
-  { id: 11, name: "RAFAELA KNIT SWEATER", price: "$277.00", image: "https://picsum.photos/seed/fashion11/800/1200" },
-  { id: 12, name: "JW ANDERSON JUMPER", price: "$750.00", image: "https://picsum.photos/seed/fashion12/800/1200" },
-  { id: 13, name: "SHAY TRENCH COAT", price: "$345.00", image: "https://picsum.photos/seed/fashion13/800/1200", isNew: true },
-  { id: 14, name: "TORIA COTTON SHIRT", price: "$145.00", image: "https://picsum.photos/seed/fashion14/800/1200" },
-  { id: 15, name: "MADISON MINI VELVET DRESS", price: "$245.00", image: "https://picsum.photos/seed/fashion15/800/1200", isNew: true },
-  { id: 16, name: "LUNA SILK SLIP DRESS", price: "$195.00", image: "https://picsum.photos/seed/fashion16/800/1200" },
-];
+const API_BASE_URL = 'http://127.0.0.1:8000/api/products';
 
-export default function Home() {
+export default function Shop() {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const { theme } = useTheme();
+
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch categories from backend
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/categories/`)
+      .then(res => res.json())
+      .then(data => setCategories(data))
+      .catch(err => console.error("Failed to load categories", err));
+  }, []);
+
+  // Fetch products dynamically based on selected category
+  useEffect(() => {
+    setIsLoading(true);
+    let url = `${API_BASE_URL}/`;
+    if (selectedCategory) {
+      url += `?category=${selectedCategory}`;
+    }
+    
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        // Обработка пагинации от DRF, если есть data.results
+        if (data.results) {
+          setProducts(data.results);
+        } else {
+          setProducts(data);
+        }
+      })
+      .catch(err => console.error("Failed to load products", err))
+      .finally(() => setIsLoading(false));
+  }, [selectedCategory]);
 
   return (
     <div className={`${styles.wrapperShop} ${isDarkMode ? styles.dark : styles.light}`}>
@@ -35,21 +53,25 @@ export default function Home() {
       {/* Filters */}
       <section className={styles.filters}>
         <div className={styles.filterLinks}>
-          <a href="#" className={styles.active}>All</a>
-          <span className={styles.divider}>|</span>
-          <a href="#">Outerwear</a>
-          <span className={styles.divider}>|</span>
-          <a href="#">Knitwear</a>
-          <span className={styles.divider}>|</span>
-          <a href="#">Tops</a>
-          <span className={styles.divider}>|</span>
-          <a href="#">Bottoms</a>
-          <span className={styles.divider}>|</span>
-          <a href="#">Dresses</a>
-          <span className={styles.divider}>|</span>
-          <a href="#">Jumpsuits</a>
-          <span className={styles.divider}>|</span>
-          <a href="#">Loungewear</a>
+          <a 
+            href="#" 
+            className={!selectedCategory ? styles.active : ''} 
+            onClick={(e) => { e.preventDefault(); setSelectedCategory(''); }}
+          >
+            All
+          </a>
+          {categories.map((cat) => (
+            <React.Fragment key={cat.id}>
+              <span className={styles.divider}>|</span>
+              <a 
+                href="#" 
+                className={selectedCategory === cat.slug ? styles.active : ''}
+                onClick={(e) => { e.preventDefault(); setSelectedCategory(cat.slug); }}
+              >
+                {cat.name}
+              </a>
+            </React.Fragment>
+          ))}
         </div>
         <button className={styles.filterBtn}>
           Filter & Sort <Plus size={14} />
@@ -59,31 +81,49 @@ export default function Home() {
 
       {/* Product Grid */}
       <main className={styles.productGrid}>
-        {PRODUCTS.map((product) => (
-          <div key={product.id} className={styles.productCard}>
-            <div className={styles.imageContainer}>
-              <img 
-                src={product.image} 
-                alt={product.name}
-                className={styles.productImage}
-                referrerPolicy="no-referrer"
-              />
-              {product.isNew && (
-                <div className={styles.badge}>
-                  New in
+        {isLoading ? (
+            <div style={{ padding: '40px', textAlign: 'center', gridColumn: '1 / -1', color: 'var(--text-color)' }}>
+                Loading collection...
+            </div>
+        ) : products.length === 0 ? (
+            <div style={{ padding: '40px', textAlign: 'center', gridColumn: '1 / -1', color: 'var(--text-color)' }}>
+                No products found in this category.
+            </div>
+        ) : (
+          products.map((product) => {
+            const imgUrl = product.main_image_url?.startsWith('http') 
+                ? product.main_image_url 
+                : `http://127.0.0.1:8000${product.main_image_url || ''}`;
+
+            return (
+              <div key={product.id} className={styles.productCard}>
+                <div className={styles.imageContainer}>
+                  <img 
+                    src={imgUrl} 
+                    alt={product.name}
+                    className={styles.productImage}
+                    referrerPolicy="no-referrer"
+                    onError={(e) => { e.target.src = 'https://via.placeholder.com/800x1200/f0f0f0/666666?text=No+Photo'; }}
+                  />
+                  {/* Имитируем бейджик "new" просто для показа (первые 3 товара) */}
+                  {product.id <= 3 && (
+                    <div className={styles.badge}>
+                      New in
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-            <div className={styles.productInfo}>
-              <h3 className={styles.productName}>
-                {product.name}
-              </h3>
-              <span className={styles.productPrice}>
-                {product.price}
-              </span>
-            </div>
-          </div>
-        ))}
+                <div className={styles.productInfo}>
+                  <h3 className={styles.productName}>
+                    {product.brand} {product.name}
+                  </h3>
+                  <span className={styles.productPrice}>
+                    {parseFloat(product.price).toLocaleString('ru-RU')} ₽
+                  </span>
+                </div>
+              </div>
+            );
+          })
+        )}
       </main>
 
 
