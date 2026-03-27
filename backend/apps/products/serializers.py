@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Tag, Product, ProductImage, ProductSize
+from .models import Category, Tag, Color, Product, ProductImage, ProductSize
 
 class CategorySerializer(serializers.ModelSerializer):
     children = serializers.SerializerMethodField()
@@ -18,6 +18,11 @@ class TagSerializer(serializers.ModelSerializer):
         model = Tag
         fields = ['id', 'name', 'slug']
 
+class ColorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Color
+        fields = ['id', 'name', 'hex_code']
+
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
@@ -31,10 +36,11 @@ class ProductSizeSerializer(serializers.ModelSerializer):
 class ProductShortSerializer(serializers.ModelSerializer):
     main_image_url = serializers.SerializerMethodField()
     category_name = serializers.CharField(source='category.name', read_only=True)
+    color = serializers.CharField(source='color.name', read_only=True)
 
     class Meta:
         model = Product
-        fields = ['id', 'name', 'brand', 'price', 'main_image_url', 'category_name']
+        fields = ['id', 'name', 'brand', 'color', 'price', 'main_image_url', 'category_name']
 
     def get_main_image_url(self, obj):
         # We assume that the view/service has prefetched images 
@@ -49,13 +55,13 @@ class ProductShortSerializer(serializers.ModelSerializer):
 
 class ProductDetailSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
-    tags = TagSerializer(many=True, read_only=True)
+    color = ColorSerializer(read_only=True)
     images = ProductImageSerializer(many=True, read_only=True)
     sizes = ProductSizeSerializer(many=True, read_only=True)
 
     class Meta:
         model = Product
         fields = [
-            'id', 'name', 'description', 'price', 'category', 'brand', 
-            'is_active', 'created_at', 'images', 'sizes', 'tags'
+            'id', 'name', 'description', 'price', 'category', 'brand', 'color',
+            'is_active', 'created_at', 'images', 'sizes'
         ]

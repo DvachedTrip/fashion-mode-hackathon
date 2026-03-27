@@ -6,6 +6,7 @@ class ProductFilter(django_filters.FilterSet):
     category = django_filters.CharFilter(field_name='category__slug')
     tag = django_filters.CharFilter(method='filter_by_tags')
     brand = django_filters.CharFilter(lookup_expr='iexact')
+    color = django_filters.CharFilter(field_name='color__name', lookup_expr='iexact')
     price_min = django_filters.NumberFilter(field_name='price', lookup_expr='gte')
     price_max = django_filters.NumberFilter(field_name='price', lookup_expr='lte')
     size = django_filters.CharFilter(field_name='sizes__size', lookup_expr='iexact')
@@ -19,7 +20,7 @@ class ProductFilter(django_filters.FilterSet):
 
     class Meta:
         model = Product
-        fields = ['category', 'tag', 'brand', 'price_min', 'price_max', 'size', 'search', 'ordering']
+        fields = ['category', 'tag', 'brand', 'color', 'price_min', 'price_max', 'size', 'search', 'ordering']
 
     def filter_by_tags(self, queryset, name, value):
         tags = self.data.getlist('tag')
