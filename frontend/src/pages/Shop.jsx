@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 import styles from '../assets/css/Shop.module.css';
+import { useTheme } from '../components/ThemeContext';
 
 const PRODUCTS = [
   { id: 1, name: "MAVIS OVERSIZED TRENCH", price: "$345.00", image: "https://picsum.photos/seed/fashion1/800/1200", isNew: true },
@@ -23,6 +24,7 @@ const PRODUCTS = [
 
 export default function Home() {
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const { theme } = useTheme();
 
   return (
     <div className={`${styles.wrapperShop} ${isDarkMode ? styles.dark : styles.light}`}>
