@@ -12,12 +12,10 @@ export default function Sidebar() {
     const [isLoading, setIsLoading] = useState(false);
     const messagesEndRef = useRef(null);
 
-    // Автопрокрутка вниз при новых сообщениях
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages, isLoading]);
 
-    // Инициализация сессии
     useEffect(() => {
         const initSession = async () => {
             let currentSessionId = localStorage.getItem('chatSessionId');
@@ -37,7 +35,7 @@ export default function Sidebar() {
                 }
             } else {
                 setSessionId(currentSessionId);
-                // Загружаем историю (если сессия есть)
+
                 try {
                     const res = await fetch(`${API_BASE_URL}/sessions/${currentSessionId}/messages/`);
                     if (res.ok) {
@@ -54,7 +52,7 @@ export default function Sidebar() {
             }
         };
 
-        // Запрашиваем сессию только когда чат открывают (по желанию, можно и сразу на mount)
+
         if (isCartOpen && !sessionId) {
             initSession();
         }
@@ -65,13 +63,11 @@ export default function Sidebar() {
         const text = message.trim();
         if (!text || !sessionId || isLoading) return;
 
-        // Показываем сообщение моментально для UX
         const userMsg = { role: 'user', text: text };
         setMessages(prev => [...prev, userMsg]);
         setMessage("");
         setIsLoading(true);
 
-        // Посылаем запрос на бэкенд
         try {
             const res = await fetch(`${API_BASE_URL}/sessions/${sessionId}/messages/`, {
                 method: 'POST',
@@ -117,7 +113,6 @@ export default function Sidebar() {
                                 {msg.products && msg.products.length > 0 && (
                                     <div className={styles["product-list"]}>
                                         {msg.products.map(p => {
-                                            // Добавляем домен сервера к относительной ссылке картинки
                                             const imgUrl = p.main_image_url?.startsWith('http') 
                                                 ? p.main_image_url 
                                                 : `http://127.0.0.1:8000${p.main_image_url}`;
@@ -144,7 +139,6 @@ export default function Sidebar() {
                         {isLoading && (
                             <div className={styles["typing-indicator"]}>Стилист печатает...</div>
                         )}
-                        {/* Невидимый якорь для скролла */}
                         <div ref={messagesEndRef} />
                     </div>
                 </div>

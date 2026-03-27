@@ -20,3 +20,89 @@ body {
   color: var(--text-color);
   transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+
+
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Поверх всего рисуем новую тему */
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 999;
+}
+
+/* Для темной темы инвертируем порядок, чтобы круг "схлопывался" или наоборот */
+.dark-theme::view-transition-old(root) {
+  z-index: 999;
+}
+.dark-theme::view-transition-new(root) {
+  z-index: 1;
+}
+
+
+::view-transition-old(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+  z-index: 9999; /* Новая тема всегда сверху */
+}
+
+/* Убираем стандартное затухание браузера, чтобы был только наш круг */
+::view-transition-image-pair(root) {
+  isolation: isolate;
+}
+
+
+/* Отключаем стандартную анимацию затухания браузера */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+  display: block;
+}
+
+/* Старое состояние остается под низом */
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+/* Новое состояние (наш круг) растет поверх старого */
+::view-transition-new(root) {
+  z-index: 9999;
+}
+
+/* Фикс для Chrome: предотвращаем мерцание белым фоном */
+::view-transition-image-pair(root) {
+  isolation: isolate;
+}

@@ -1,11 +1,10 @@
-/* ОБЯЗАТЕЛЬНО В ГЛОБАЛЬНОМ CSS */
 :root {
   --bg-color: #ffffff;
   --text-color: #000000;
   --border-color: #e5e5e5;
 }
 
-/* Этот класс вешается на body через useEffect в ThemeContext.jsx */
+
 body.dark-theme {
   --bg-color: #1a1a1a;
   --text-color: #ffffff;
@@ -15,5 +14,5 @@ body.dark-theme {
 body {
   background-color: var(--bg-color);
   color: var(--text-color);
-  transition: all 0.3s ease; /* Чтобы плавно менялось */
+  transition: all 0.3s ease;
 }

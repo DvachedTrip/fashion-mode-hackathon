@@ -86,9 +86,12 @@ export default function Shop() {
                 Loading collection...
             </div>
         ) : products.length === 0 ? (
-            <div style={{ padding: '40px', textAlign: 'center', gridColumn: '1 / -1', color: 'var(--text-color)' }}>
+            <div style={{ padding: '40px', textAlign: 'center', gridColumn: '1 / -1', color: 'var(--text-color)', fontFamily: 'sans-serif' }}>
                 No products found in this category.
             </div>
+            // <div className={styles.loaderContainer}>
+            //   <div className={styles.loader}></div>
+            // </div>
         ) : (
           products.map((product) => {
             const imgUrl = product.main_image_url?.startsWith('http') 
@@ -128,28 +131,7 @@ export default function Shop() {
 
 
 
-      {/* Footer Pagination */}
-      <footer className={styles.footer}>
-        <button className={styles.viewMoreBtn}>
-          View More Items
-        </button>
-        
-        <div className={styles.pagination}>
-          <button className={styles.iconBtn} disabled>
-            <ChevronLeft size={16} />
-          </button>
-          <div className={styles.pageNumbers}>
-            <span className={styles.active}>1</span>
-            <span>2</span>
-            <span>3</span>
-            <span>...</span>
-            <span>7</span>
-          </div>
-          <button className={styles.iconBtn}>
-            <ChevronRight size={16} />
-          </button>
-        </div>
-      </footer>
+
     </div>
   );
 }

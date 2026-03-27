@@ -1,6 +1,6 @@
 .wrapperShop {
   min-height: 100vh;
-  font-family: 'Inter', sans-serif;
+  font-family: sans-serif;
   background-color: var(--bg-color);
   color: var(--text-color);
   transition: background-color 0.5s, color 0.5s;
@@ -17,7 +17,6 @@
   text-transform: uppercase;
 }
 
-/* Filters */
 .filters {
   padding: 1rem 1.5rem;
   border-top: 1px solid var(--border-color);
@@ -61,7 +60,6 @@
   text-transform: uppercase;
 }
 
-/* Grid */
 .productGrid {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
@@ -75,6 +73,7 @@
   border-right: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
   cursor: pointer;
+  background-color: var(--bg-color);
 }
 
 .imageContainer {
@@ -117,47 +116,12 @@
   font-size: 11px;
   text-transform: uppercase;
   max-width: 70%;
+  font-weight: bold;
 }
 
 .productPrice {
   font-size: 11px;
-  opacity: 0.8;
-}
-
-/* Footer & Pagination */
-.footer {
-  padding: 5rem 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rem;
-}
-
-.viewMoreBtn {
-  padding: 0.75rem 3rem;
-  border: 1px solid var(--border-color);
-  background: none;
-  color: inherit;
-  font-size: 11px;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.viewMoreBtn:hover {
-  background-color: var(--text-color);
-  color: var(--bg-color);
-}
-
-.pageNumbers span {
-  cursor: pointer;
-  opacity: 0.4;
-  margin: 0 0.5rem;
-}
-
-.pageNumbers span.active {
-  opacity: 1;
-  text-decoration: underline;
+  opacity: 0.7;
 }
 
 .footer {
@@ -182,8 +146,8 @@
 }
 
 .viewMoreBtn:hover {
-  background-color: currentColor;
-  filter: invert(1);
+  background-color: var(--text-color);
+  color: var(--bg-color);
 }
 
 .pagination {
@@ -226,33 +190,35 @@
   cursor: not-allowed;
 }
 
-
-.shop-container {
-    background-color: var(--bg-color); /* Берет цвет из темы */
-    min-height: 100vh;
+.loaderContainer {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  padding: 60px 0;
 }
 
-.product-card {
-    border: 1px solid var(--border-color);
-    background-color: var(--card-bg); /* Специальная переменная для карточек */
-    padding: 20px;
-    transition: transform 0.2s ease;
+.loader {
+  width: 120px;
+  height: 20px;
+  background: 
+    linear-gradient(var(--text-color) 50%, #0000 0),
+    linear-gradient(#0000 50%, var(--text-color) 0),
+    linear-gradient(var(--text-color) 50%, #0000 0),
+    linear-gradient(#0000 50%, var(--text-color) 0),
+    linear-gradient(var(--text-color) 50%, #0000 0),
+    linear-gradient(#0000 50%, var(--text-color) 0)
+    var(--border-color);
+  background-size: calc(100%/6 + 1px) 200%;
+  background-repeat: no-repeat;
+  animation: l12 2s infinite;
 }
 
-.product-name {
-    color: var(--text-color);
-    font-weight: bold;
-    text-transform: uppercase;
+@keyframes l12 {
+  0%     {background-position: calc(0*100%/5) 100%,calc(1*100%/5) 0%,calc(2*100%/5) 100%,calc(3*100%/5) 0%,calc(4*100%/5) 100%,calc(5*100%/5) 0%}
+  16.67% {background-position: calc(0*100%/5) 0%,calc(1*100%/5) 0%,calc(2*100%/5) 100%,calc(3*100%/5) 0%,calc(4*100%/5) 100%,calc(5*100%/5) 0%}
+  33.33% {background-position: calc(0*100%/5) 0%,calc(1*100%/5) 100%,calc(2*100%/5) 100%,calc(3*100%/5) 0%,calc(4*100%/5) 100%,calc(5*100%/5) 0%}
+  50%    {background-position: calc(0*100%/5) 0%,calc(1*100%/5) 100%,calc(2*100%/5) 0%,calc(3*100%/5) 0%,calc(4*100%/5) 100%,calc(5*100%/5) 0%}
+  66.67% {background-position: calc(0*100%/5) 0%,calc(1*100%/5) 100%,calc(2*100%/5) 0%,calc(3*100%/5) 100%,calc(4*100%/5) 100%,calc(5*100%/5) 0%}
+  83.33% {background-position: calc(0*100%/5) 0%,calc(1*100%/5) 100%,calc(2*100%/5) 0%,calc(3*100%/5) 100%,calc(4*100%/5) 0%,calc(5*100%/5) 0%}
+  100%   {background-position: calc(0*100%/5) 0%,calc(1*100%/5) 100%,calc(2*100%/5) 0%,calc(3*100%/5) 100%,calc(4*100%/5) 0%,calc(5*100%/5) 100%}
 }
-
-.product-price {
-    color: var(--text-color);
-    opacity: 0.7; /* Будет выглядеть серым и на белом, и на черном фоне */
-}
-
-/* Линии сетки, если они есть */
-.grid-line {
-    background-color: var(--border-color);
-}
-
-

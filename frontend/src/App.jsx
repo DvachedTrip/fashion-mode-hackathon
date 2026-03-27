@@ -12,26 +12,28 @@ import Shop from "./pages/Shop"
 import { CartProvider } from './components/CartContext';
 import { ThemeProvider } from './components/ThemeContext';
 import Sidebar from './pages/Sidebar';
+import SmoothScroll from './components/SmoothScroll';
 
 function App() {
   return (
     <ThemeProvider>
-      <CartProvider>
-        <div className={styles["all"]}>
-          <Header />
-          
-          <Sidebar />
+      <SmoothScroll>
+        <CartProvider>
+          <div className={styles["all"]}>
+            <Header />
+            
+            <Sidebar />
 
-          <main>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/shop" element={<Shop />} />
-            </Routes>
-          </main>
+            <main>
+              <Routes>
+                <Route path="/" element={<Shop />} />
+              </Routes>
+            </main>
 
-          <Footer />
-        </div>
-      </CartProvider>
+            <Footer />
+          </div>
+        </CartProvider>
+      </SmoothScroll>
     </ThemeProvider>
   )
 }
