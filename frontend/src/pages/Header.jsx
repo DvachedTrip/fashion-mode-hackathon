@@ -5,7 +5,7 @@ export default function Header() {
         <header className={styles["header"]}>
             <div className={styles["header-left"]}>
                 <div className={styles["logo"]}>
-                    <span style={{fontWeight: 'bold', fontSize: '24px', color: '#fff'}}>RAÚM</span>
+                    <span style={{fontWeight: 'bold', fontSize: '24px', color: '#fff'}}>RAUM</span>
                 </div>
             </div>
 

@@ -1,0 +1,96 @@
+.footer {
+  width: 100%;
+  font-family: sans-serif;
+  background-color: #fff;
+}
+
+/* TOP SECTION */
+.footer-top {
+  padding: 80px 40px;
+  color: #1a1a1a;
+  position: relative;
+}
+
+.thanks-title {
+  font-size: 80px;
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -2px;
+  margin-bottom: 40px;
+}
+
+.indent {
+  margin-left: 20%; /* Сдвиг второй строки как на фото */
+}
+
+.collab-info {
+  display: flex;
+  justify-content: space-between;
+  max-width: 80%;
+  margin-left: 20%;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* MIDDLE BAR */
+.footer-bar {
+  background-color: #111;
+  color: #777;
+  padding: 10px 20px;
+  font-size: 11px;
+  text-align: center;
+  border-top: 1px solid #222;
+  letter-spacing: 0.5px;
+}
+
+/* BOTTOM SECTION */
+.footer-bottom {
+  background-color: #000;
+  color: #fff;
+  padding: 60px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.like-button {
+  margin-bottom: 25px;
+}
+
+.icon-blue {
+  background-color: #0047ff;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.icon-blue:hover {
+  transform: scale(1.1);
+}
+
+.project-info h3 {
+  font-size: 18px;
+  font-weight: 400;
+  margin-bottom: 10px;
+}
+
+.stats {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  color: #888;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+.date {
+  color: #444;
+  font-size: 12px;
+}
