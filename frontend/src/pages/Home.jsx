@@ -1,86 +1,107 @@
-export default function App() {
+import React, { useState } from 'react';
+import { Plus, ChevronLeft, ChevronRight } from 'lucide-react';
+import styles from './Home.module.css';
+
+const PRODUCTS = [
+  { id: 1, name: "MAVIS OVERSIZED TRENCH", price: "$345.00", image: "https://picsum.photos/seed/fashion1/800/1200", isNew: true },
+  { id: 2, name: "NAICA LEATHER JACKET", price: "$595.00", image: "https://picsum.photos/seed/fashion2/800/1200", isNew: true },
+  { id: 3, name: "ARLISE TRENCH COAT", price: "$325.00", image: "https://picsum.photos/seed/fashion3/800/1200" },
+  { id: 4, name: "ARBOR LEATHER JACKET", price: "$275.00", image: "https://picsum.photos/seed/fashion4/800/1200" },
+  { id: 5, name: "PRILLY OVERSIZED SHIRT", price: "$169.00", image: "https://picsum.photos/seed/fashion5/800/1200" },
+  { id: 6, name: "BEAUFILLE BAES CROP TOP", price: "$478.00", image: "https://picsum.photos/seed/fashion6/800/1200" },
+  { id: 7, name: "ROTATE OVERSIZED T-SHIRT", price: "$90.00", image: "https://picsum.photos/seed/fashion7/800/1200" },
+  { id: 8, name: "PELSO BARN JACKET", price: "$255.00", image: "https://picsum.photos/seed/fashion8/800/1200", isNew: true },
+  { id: 9, name: "PEORIA SUEDE BLAZER", price: "$275.00", image: "https://picsum.photos/seed/fashion9/800/1200" },
+  { id: 10, name: "IVA BLAZER", price: "$469.00", image: "https://picsum.photos/seed/fashion10/800/1200" },
+  { id: 11, name: "RAFAELA KNIT SWEATER", price: "$277.00", image: "https://picsum.photos/seed/fashion11/800/1200" },
+  { id: 12, name: "JW ANDERSON JUMPER", price: "$750.00", image: "https://picsum.photos/seed/fashion12/800/1200" },
+  { id: 13, name: "SHAY TRENCH COAT", price: "$345.00", image: "https://picsum.photos/seed/fashion13/800/1200", isNew: true },
+  { id: 14, name: "TORIA COTTON SHIRT", price: "$145.00", image: "https://picsum.photos/seed/fashion14/800/1200" },
+  { id: 15, name: "MADISON MINI VELVET DRESS", price: "$245.00", image: "https://picsum.photos/seed/fashion15/800/1200", isNew: true },
+  { id: 16, name: "LUNA SILK SLIP DRESS", price: "$195.00", image: "https://picsum.photos/seed/fashion16/800/1200" },
+];
+
+export default function Home() {
   const [isDarkMode, setIsDarkMode] = useState(true);
 
   return (
-    <div className={`min-h-screen font-sans ${isDarkMode ? 'bg-[#141414] text-white' : 'bg-white text-black'} transition-colors duration-300`}>
+    <div className={`${styles.wrapperShop} ${isDarkMode ? styles.dark : styles.light}`}>
       {/* Header */}
-      <header className="flex items-center justify-between px-6 py-4 border-b border-white/10">
-        <div className="flex items-center gap-12">
-          <h1 className="text-3xl font-bold tracking-tighter">RAÚM</h1>
-          <nav className="hidden md:flex items-center gap-8 text-[11px] font-medium tracking-widest uppercase">
-            <a href="#" className="hover:opacity-60 transition-opacity">Shop</a>
-            <a href="#" className="hover:opacity-60 transition-opacity">Collections</a>
-            <a href="#" className="hover:opacity-60 transition-opacity">About</a>
+      <header className={styles.header}>
+        <div className={styles.headerLeft}>
+          <h1 className={styles.logo}>RAÚM</h1>
+          <nav className={styles.nav}>
+            <a href="#" className={styles.navLink}>Shop</a>
+            <a href="#" className={styles.navLink}>Collections</a>
+            <a href="#" className={styles.navLink}>About</a>
           </nav>
         </div>
         
-        <div className="flex items-center gap-8 text-[11px] font-medium tracking-widest uppercase">
+        <div className={styles.headerRight}>
           <button 
             onClick={() => setIsDarkMode(!isDarkMode)}
-            className="hover:opacity-60 transition-opacity cursor-pointer"
+            className={styles.themeToggle}
           >
-            [{isDarkMode ? <span className="opacity-40">DARK / </span> : 'DARK / '}
-             {isDarkMode ? 'LIGHT' : <span className="opacity-40">LIGHT</span>}]
+            [{isDarkMode ? <span>DARK / </span> : 'DARK / '}
+             {isDarkMode ? 'LIGHT' : <span>LIGHT</span>}]
           </button>
-          <button className="flex items-center gap-2 hover:opacity-60 transition-opacity">
-            <span>Search</span>
-          </button>
-          <button className="hover:opacity-60 transition-opacity">Account</button>
-          <button className="hover:opacity-60 transition-opacity">Bag</button>
+          <button>Search</button>
+          <button>Account</button>
+          <button>Bag</button>
         </div>
       </header>
 
       {/* Hero Title */}
-      <section className="px-6 py-12">
-        <h2 className="text-2xl font-medium tracking-tight uppercase">All Clothing</h2>
+      <section className={styles.heroTitle}>
+        <h2>All Clothing</h2>
       </section>
 
       {/* Filters */}
-      <section className="px-6 py-4 border-t border-b border-white/10 flex items-center justify-between text-[11px] font-medium tracking-widest uppercase">
-        <div className="flex items-center gap-4 overflow-x-auto no-scrollbar">
-          <a href="#" className="underline underline-offset-4">All</a>
-          <span className="opacity-20">|</span>
-          <a href="#" className="opacity-60 hover:opacity-100">Outerwear</a>
-          <span className="opacity-20">|</span>
-          <a href="#" className="opacity-60 hover:opacity-100">Knitwear</a>
-          <span className="opacity-20">|</span>
-          <a href="#" className="opacity-60 hover:opacity-100">Tops</a>
-          <span className="opacity-20">|</span>
-          <a href="#" className="opacity-60 hover:opacity-100">Bottoms</a>
-          <span className="opacity-20">|</span>
-          <a href="#" className="opacity-60 hover:opacity-100">Dresses</a>
-          <span className="opacity-20">|</span>
-          <a href="#" className="opacity-60 hover:opacity-100">Jumpsuits</a>
-          <span className="opacity-20">|</span>
-          <a href="#" className="opacity-60 hover:opacity-100">Loungewear</a>
+      <section className={styles.filters}>
+        <div className={styles.filterLinks}>
+          <a href="#" className={styles.active}>All</a>
+          <span className={styles.divider}>|</span>
+          <a href="#">Outerwear</a>
+          <span className={styles.divider}>|</span>
+          <a href="#">Knitwear</a>
+          <span className={styles.divider}>|</span>
+          <a href="#">Tops</a>
+          <span className={styles.divider}>|</span>
+          <a href="#">Bottoms</a>
+          <span className={styles.divider}>|</span>
+          <a href="#">Dresses</a>
+          <span className={styles.divider}>|</span>
+          <a href="#">Jumpsuits</a>
+          <span className={styles.divider}>|</span>
+          <a href="#">Loungewear</a>
         </div>
-        <button className="flex items-center gap-1 hover:opacity-60 transition-opacity">
+        <button className={styles.filterBtn}>
           Filter & Sort <Plus size={14} />
         </button>
       </section>
 
       {/* Product Grid */}
-      <main className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 border-b border-white/10">
+      <main className={styles.productGrid}>
         {PRODUCTS.map((product) => (
-          <div key={product.id} className="group border-r border-b border-white/10 last:border-r-0 lg:[&:nth-child(4n)]:border-r-0 relative cursor-pointer">
-            <div className="aspect-[3/4] overflow-hidden bg-[#1a1a1a]">
+          <div key={product.id} className={styles.productCard}>
+            <div className={styles.imageContainer}>
               <img 
                 src={product.image} 
                 alt={product.name}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                className={styles.productImage}
                 referrerPolicy="no-referrer"
               />
               {product.isNew && (
-                <div className="absolute top-4 right-4 bg-white/10 backdrop-blur-md px-2 py-1 text-[9px] font-bold tracking-widest uppercase border border-white/20">
+                <div className={styles.badge}>
                   New in
                 </div>
               )}
             </div>
-            <div className="p-4 flex justify-between items-start gap-4">
-              <h3 className="text-[11px] font-medium tracking-widest uppercase leading-tight max-w-[70%]">
+            <div className={styles.productInfo}>
+              <h3 className={styles.productName}>
                 {product.name}
               </h3>
-              <span className="text-[11px] font-medium tracking-widest">
+              <span className={styles.productPrice}>
                 {product.price}
               </span>
             </div>
@@ -89,21 +110,25 @@ export default function App() {
       </main>
 
       {/* Footer Pagination */}
-      <footer className="py-20 flex flex-col items-center gap-8">
-        <button className="px-12 py-3 border border-white/20 text-[11px] font-medium tracking-[0.2em] uppercase hover:bg-white hover:text-black transition-all duration-300">
+      <footer className={styles.footer}>
+        <button className={styles.viewMoreBtn}>
           View More Items
         </button>
         
-        <div className="flex items-center gap-6 text-[11px] font-medium tracking-widest">
-          <ChevronLeft size={16} className="opacity-40 cursor-not-allowed" />
-          <div className="flex items-center gap-4">
-            <span className="underline underline-offset-4">1</span>
-            <span className="opacity-40 hover:opacity-100 cursor-pointer">2</span>
-            <span className="opacity-40 hover:opacity-100 cursor-pointer">3</span>
-            <span className="opacity-40">...</span>
-            <span className="opacity-40 hover:opacity-100 cursor-pointer">7</span>
+        <div className={styles.pagination}>
+          <button className={styles.iconBtn} disabled>
+            <ChevronLeft size={16} />
+          </button>
+          <div className={styles.pageNumbers}>
+            <span className={styles.active}>1</span>
+            <span>2</span>
+            <span>3</span>
+            <span>...</span>
+            <span>7</span>
           </div>
-          <ChevronRight size={16} className="opacity-100 cursor-pointer hover:opacity-60" />
+          <button className={styles.iconBtn}>
+            <ChevronRight size={16} />
+          </button>
         </div>
       </footer>
     </div>
