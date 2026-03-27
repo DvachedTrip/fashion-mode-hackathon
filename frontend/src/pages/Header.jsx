@@ -43,7 +43,7 @@ export default function Header() {
                 </div>
                 <a href="/search">SEARCH</a>
                 <a href="/account">ACCOUNT</a>
-                <a onClick={(e) => { e.preventDefault(); toggleCart(); }} href="#">BAG</a>
+                <a onClick={(e) => { e.preventDefault(); toggleCart(); }} href="#">AI</a>
             </div>
         </header>
     );
