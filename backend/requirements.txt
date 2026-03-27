@@ -1,0 +1,7 @@
+Django>=5.0,<6.0
+djangorestframework
+django-filter
+django-cors-headers
+python-decouple
+Pillow
+requests
