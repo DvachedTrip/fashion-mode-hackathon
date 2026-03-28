@@ -87,11 +87,23 @@ class TryOnService:
             product = product_map.get(pid)
             if not product:
                 continue
-            main_image = product.images.filter(is_main=True).first()
-            if not main_image:
-                main_image = product.images.first()
-            if main_image:
-                items.append({'product': product, 'image': main_image})
+            # For try-on, prefer the second (non-main) image — typically a flat-lay/isolated garment
+            # which works much better with IDM-VTON than lifestyle/model shots
+            all_images = list(product.images.all())
+            if len(all_images) >= 2:
+                # Pick the first non-main image (second photo)
+                tryon_image = None
+                for img in all_images:
+                    if not img.is_main:
+                        tryon_image = img
+                        break
+                if not tryon_image:
+                    tryon_image = all_images[1]  # fallback: just take the second one
+            elif all_images:
+                tryon_image = all_images[0]
+            else:
+                continue
+            items.append({'product': product, 'image': tryon_image})
 
         # Sort: upper_body → lower_body → dresses for best sequential results
         items.sort(key=lambda x: CATEGORY_ORDER.get(self._get_vton_category(x), 1))
