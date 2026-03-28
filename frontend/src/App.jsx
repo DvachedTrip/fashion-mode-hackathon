@@ -8,6 +8,7 @@ import Footer from "./pages/Footer"
 
 import Home from "./pages/Home"
 import Shop from "./pages/Shop"
+import Info from "./pages/Info"
 
 import { CartProvider } from './components/CartContext';
 import { ThemeProvider } from './components/ThemeContext';
@@ -27,6 +28,7 @@ function App() {
             <main>
               <Routes>
                 <Route path="/" element={<Shop />} />
+                <Route path="/info" element={<Info />} />
               </Routes>
             </main>
 
