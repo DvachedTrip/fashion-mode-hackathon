@@ -15,7 +15,7 @@ export default function Sidebar() {
     const [sessionId, setSessionId] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     
-    const [isTryOnModalOpen, setIsTryOnModalOpen] = useState(true);
+    const [isTryOnModalOpen, setIsTryOnModalOpen] = useState(false);
     const [tryOnProducts, setTryOnProducts] = useState([]);
     const [userPhoto, setUserPhoto] = useState(null);
     const [userPhotoFile, setUserPhotoFile] = useState(null);
