@@ -1,6 +1,6 @@
----
+ 
 
-## Техническое задание — AI Fashion Store (хакатон)
+## Техническое задание - AI Fashion Store (хакатон)
 
 ### 1. Общее описание
 
@@ -8,7 +8,7 @@
 
 Язык интерфейса: **Русский**. Комментарии в коде не пишутся.
 
----
+ 
 
 ### 2. Структура проекта
 
@@ -18,7 +18,7 @@ project-root/
 └── frontend/
 ```
 
----
+ 
 
 ### 3. Стек технологий
 
@@ -26,7 +26,7 @@ project-root/
 
 **Frontend:** React (разрабатывается отдельным участником по шаблону)
 
----
+ 
 
 ### 4. Структура backend
 
@@ -49,7 +49,7 @@ backend/
 └── requirements.txt
 ```
 
----
+ 
 
 ### 5. Модели данных
 
@@ -106,7 +106,7 @@ status (pending / processing / done / failed),
 error_message (TextField, nullable), created_at
 ```
 
----
+ 
 
 ### 6. API Endpoints
 
@@ -156,7 +156,7 @@ POST  /api/ai/tryon/          → multipart: session_key + product_id + user_pho
 GET   /api/ai/tryon/{id}/     → { status, result_image_url, error_message }
 ```
 
----
+ 
 
 ### 7. Сервисный слой
 
@@ -173,7 +173,7 @@ GET   /api/ai/tryon/{id}/     → { status, result_image_url, error_message }
 **`ai_tryon/services.py`**
 - `TryOnService` — принимает фото пользователя и фото товара, отправляет в Gemini Vision, сохраняет результат
 
----
+ 
 
 ### 8. Логика AI-чата — детально
 
@@ -191,7 +191,7 @@ GET   /api/ai/tryon/{id}/     → { status, result_image_url, error_message }
 
 **Важно:** Backend никогда не передаёт raw-ответ Gemini клиенту напрямую. Ответ маппируется через dataclass `GeminiChatResponse(message: str, product_ids: list[int])`, затем из БД достаются реальные объекты Product и сериализуются.
 
----
+ 
 
 ### 9. Логика AI-примерки — детально
 
@@ -205,7 +205,7 @@ GET   /api/ai/tryon/{id}/     → { status, result_image_url, error_message }
    - Результат сохраняется в `result_image`, статус → `done`.
 5. Фронт поллингом (раз в 2 секунды) запрашивает `GET /api/ai/tryon/{id}/` до `status = done`, затем отображает результат.
 
----
+ 
 
 ### 10. Сериализаторы
 
@@ -224,7 +224,7 @@ id, name, brand, price, main_image_url, category_name
 id, role, text, products (ProductShortSerializer[]), created_at
 ```
 
----
+ 
 
 ### 11. Требования к коду
 
@@ -236,7 +236,7 @@ id, role, text, products (ProductShortSerializer[]), created_at
 
 **Маппинг:** любой ответ внешнего API (Gemini) преобразуется через промежуточный dataclass перед использованием — raw JSON от Gemini не передаётся клиенту и не пишется в БД как есть.
 
----
+ 
 
 ### 12. Переменные окружения
 
@@ -249,7 +249,7 @@ MEDIA_ROOT=media/
 MAX_UPLOAD_SIZE_MB=10
 ```
 
----
+ 
 
 ### 13. Тестовые данные (fixtures)
 
@@ -258,7 +258,7 @@ MAX_UPLOAD_SIZE_MB=10
 - 15–20 товаров с изображениями, размерами и тегами
 - 10–15 тегов (стиль, материал, сезон, цвет)
 
----
+ 
 
 ### 14. Что делает фронтенд-разработчик
 
@@ -269,7 +269,7 @@ MAX_UPLOAD_SIZE_MB=10
 - Интеграция с REST API через Axios
 - `session_key` чата и ID запросов примерки хранятся в `localStorage`
 
----
+ 
 
 ### 15. Что демонстрируется на хакатоне
 
