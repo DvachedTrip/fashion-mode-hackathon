@@ -45,10 +45,14 @@ export default function Sidebar() {
                     console.error("Ошибка при создании сессии:", error);
                 }
             } else {
-                setSessionId(currentSessionId);
                 try {
                     const res = await fetch(`${API_BASE_URL}/sessions/${currentSessionId}/messages/`);
-                    if (res.ok) {
+                    if (res.status === 404) {
+                        // Stale session — create a fresh one
+                        localStorage.removeItem('chatSessionId');
+                        currentSessionId = null;
+                    } else if (res.ok) {
+                        setSessionId(currentSessionId);
                         const data = await res.json();
                         if (data.length > 0) {
                             setMessages(data);
@@ -58,9 +62,29 @@ export default function Sidebar() {
                                 text: 'Привет! Я твой персональный ИИ-стилист. Помочь тебе подобрать образ на сегодня?' 
                             }]);
                         }
+                        return; // session is valid, stop here
                     }
                 } catch (error) {
                     console.error("Ошибка при загрузке истории:", error);
+                }
+
+                // If we reach here, session was invalid — create a new one
+                if (!currentSessionId) {
+                    try {
+                        const res = await fetch(`${API_BASE_URL}/sessions/`, { method: 'POST' });
+                        if (res.ok) {
+                            const data = await res.json();
+                            currentSessionId = data.session_key;
+                            localStorage.setItem('chatSessionId', currentSessionId);
+                            setSessionId(currentSessionId);
+                            setMessages([{ 
+                                role: 'assistant', 
+                                text: 'Привет! Я твой персональный ИИ-стилист. Помочь тебе подобрать образ на сегодня или найти конкретную вещь?' 
+                            }]);
+                        }
+                    } catch (error) {
+                        console.error("Ошибка при создании новой сессии:", error);
+                    }
                 }
             }
         };
