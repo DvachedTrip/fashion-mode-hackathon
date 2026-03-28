@@ -159,6 +159,15 @@
   letter-spacing: 0.15em;
 }
 
+.wrapper-background {
+  display: flex;
+  justify-content: center;
+
+}
+.wrapper-background img {
+  width: 50%;
+}
+
 .pageNumbers {
   display: flex;
   align-items: center;

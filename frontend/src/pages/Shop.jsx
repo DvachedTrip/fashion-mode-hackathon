@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 import styles from '../assets/css/Shop.module.css';
 import { useTheme } from '../components/ThemeContext';
+import { images } from "../assets/img/images"
 
 const API_BASE_URL = 'http://127.0.0.1:8000/api/products';
 
@@ -46,6 +47,12 @@ export default function Shop() {
 
   return (
     <div className={`${styles.wrapperShop} ${isDarkMode ? styles.dark : styles.light}`}>
+
+      {/* <section className={styles['wrapper-background']}>
+        <img src={images.background_a} alt="a" />
+        <img src={images.background_b} alt="b" />
+      </section> */}
+
       <section className={styles.heroTitle}>
         <h2>All Clothing</h2>
       </section>
