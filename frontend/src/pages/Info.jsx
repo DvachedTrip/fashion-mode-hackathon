@@ -35,37 +35,35 @@ export default function Info() {
   }, [id]);
 
   if (loading) {
-    return <div className={styles.wrapper} style={{ textAlign: 'center', padding: '50px', color: '#fff' }}>Loading Data...</div>;
+    return <div className={styles.wrapper} style={{ textAlign: 'center', padding: '50px', color: '#fff' }}>Загрузка...</div>;
   }
 
   if (!product) {
-    return <div className={styles.wrapper} style={{ textAlign: 'center', padding: '50px', color: '#fff' }}>Product not found.</div>;
+    return <div className={styles.wrapper} style={{ textAlign: 'center', padding: '50px', color: '#fff' }}>Не найдено.</div>;
   }
 
   return (
     <div className={styles.wrapper}>
 
       <nav className={styles.breadcrumb}>
-        <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}>Catalog / </Link>
+        <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}>Каталог / </Link>
         {product.category && product.category.name}
       </nav>
 
       <div className={styles.container}>
-        {/* ЛЕВАЯ КОЛОНКА */}
         <div className={styles.leftCol}>
           <h1 className={styles.title}>{product.brand} {product.name}</h1>
-          <p className={styles.price}>{parseFloat(product.price).toLocaleString('ru-RU')} ₽</p>
+          <p className={styles.price}>{parseFloat(product.price).toLocaleString('ru-RU')} ₸</p>
 
           <div className={styles.detailsSection}>
-            <h3>DETAILS</h3>
+            <h3>ДЕТАЛИ</h3>
             <p style={{ fontSize: '12px', lineHeight: '1.6', color: '#b0b0b0', marginTop: '15px' }}>
               {product.description}
             </p>
-            <a href="#" className={styles.sizeGuideLink} style={{ display: 'block', marginTop: '10px' }}>Size guide</a>
           </div>
 
           <div className={styles.tabs}>
-            <button className={styles.activeTab}>DETAILS</button>
+            <button className={styles.activeTab}>ДЕТАЛИ</button>
           </div>
         </div>
 
@@ -104,7 +102,7 @@ export default function Info() {
 
           <div className={styles.selectionArea}>
             <div className={styles.colorPicker}>
-              <p>COLOR: <span>{product.color?.name || 'Standard'}</span></p>
+              <p>ЦВЕТА: <span>{product.color?.name || 'Standard'}</span></p>
               <div 
                   className={styles.colorBox} 
                   style={{ 
@@ -116,7 +114,7 @@ export default function Info() {
 
             <div className={styles.sizeSelection}>
               <div className={styles.sizeHeader}>
-                <p>SELECT A SIZE:</p>
+                <p>ВЫБРАТЬ:</p>
               </div>
               <div className={styles.sizeGrid}>
                 {product.sizes?.map(sizeObj => (
@@ -139,14 +137,14 @@ export default function Info() {
                 disabled={!selectedSize}
                 onClick={() => alert(`Added ${product.name} (Size: ${selectedSize}) to cart!`)}
               >
-                ADD TO BAG
+                ДОБАВИТЬ В КОРЗИНУ
               </button>
-              <button className={styles.wishlistBtn}>TRY ON</button>
+              <button className={styles.wishlistBtn}>ПРИМЕРИТЬ</button>
             </div>
 
             <div className={styles.extraLinks}>
-              <a>Check in-store availability</a>
-              <a>@2026 AI Fashion</a>
+              <a>@ 2026</a>
+              <a>AVISHU MODE</a>
             </div>
           </div>
         </div>

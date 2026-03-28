@@ -5,6 +5,9 @@ import styles from '../assets/css/Shop.module.css';
 import { useTheme } from '../components/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import Footer from '../pages/Footer'
+
+import { images } from '../assets/img/images'
 const API_BASE_URL = 'http://127.0.0.1:8000/api/products';
 
 // Варианты анимации "Призрака"
@@ -49,38 +52,28 @@ export default function Shop() {
 
   return (
     <div className={`${styles.wrapperShop} ${theme === 'dark' ? styles.dark : styles.light}`}>
+      <Footer />
 
       <section className={styles.heroSection}>
         {/* Левая панель с заголовком */}
         <div className={styles.heroPanel}>
           <div className={styles.heroBgImage1}></div>
           <div className={styles.heroContent}>
-            <h1 className={styles.mainTitle}>COMPLETE THE LOOK</h1>
-            <div className={styles.paginationSimple}>
-              <span className={styles.activePage}>[01]</span>
-              <span>[02]</span>
-            </div>
+            <h1 className={styles.mainTitle}>ВЫБЕРИТЕ СВОЙ ОБРАЗ</h1>
           </div>
         </div>
 
         {/* Правая панель с акцентным фото */}
         <div className={styles.heroPanel}>
-          <div className={styles.heroBgImage2}></div>
-          <div className={styles.badgeSale}>Sale</div>
-          <div className={styles.heroProductInfo}>
-            <span className={styles.heroProductName}>LOULOU STUDIO TANIA SHOULDER BAG</span>
-            <span className={styles.heroProductPrice}>
-              <del>$665.00</del> $333.00
-            </span>
+          <div className={styles.heroBgImage2}>
+            <img src={images['background_a']} alt="a" />
           </div>
         </div>
         
         {/* Крайняя правая панель (опционально для сетки 3 колонки как на скрине) */}
         <div className={styles.heroPanel}>
-          <div className={styles.heroBgImage3}></div>
-          <div className={styles.heroProductInfo}>
-            <span className={styles.heroProductName}>GIA BORGHINI X HEIDI BIVENS HUNTER</span>
-            <span className={styles.heroProductPrice}>$415.00</span>
+          <div className={styles.heroBgImage3}>
+            <img src={images['background_b']} alt="b" />
           </div>
         </div>
       </section>
@@ -113,11 +106,11 @@ export default function Shop() {
         <AnimatePresence mode="wait">
           {isLoading ? (
             <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className={styles.statusMessage}>
-              Loading collection...
+              Загрузка...
             </motion.div>
           ) : products.length === 0 ? (
             <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className={styles.statusMessage}>
-              No products found.
+              Не найдено.
             </motion.div>
           ) : (
             <motion.div 

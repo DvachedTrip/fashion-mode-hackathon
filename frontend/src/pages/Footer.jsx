@@ -44,18 +44,18 @@ const Footer = () => {
         <div className={styles["thanks-title"]}>
           {/* Добавим задержку появления для каждой строки отдельно в CSS для красоты */}
           <span className={styles["avishu-row"]}>AVISHU</span>
-          <span className={styles["indent"]}>FOR YOU.</span>
+          <span className={styles["indent"]}>ДЛЯ ВАС</span>
         </div>
         
         <div className={styles["collab-info"]}>
           <div className={styles["collab-left"]}>
-            I'm open to collaborations<br />
-            and creative<br />
-            connections
+            Мы верим в силу общих идей,<br />
+            смелых коллабораций и<br />
+            творческих союзов
           </div>
           <div className={styles["collab-right"]}>
-            — let's create<br />
-            something together.
+            — давайте создавать <br />
+            будущее вместе.
           </div>
         </div>
       </div>

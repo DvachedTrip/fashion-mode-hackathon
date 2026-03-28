@@ -54,7 +54,6 @@ function App() {
             </AnimatePresence>
 
             <Header />
-            <Footer />
             <Sidebar />
 
             <main>

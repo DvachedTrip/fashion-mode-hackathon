@@ -153,7 +153,7 @@ export default function Sidebar() {
                                 ) : (
                                     <div className={styles["upload-placeholder"]}>
                                         <span>+</span>
-                                        <p>Click to upload</p>
+                                        <p>Кликните чтобы добавить</p>
                                     </div>
                                 )}
                             </div>
@@ -171,7 +171,7 @@ export default function Sidebar() {
                                 disabled={!userPhoto}
                                 onClick={() => alert("Генерация образа на основе вашего фото...")}
                             >
-                                GENERATE LOOK
+                                СГЕНЕРИРОВАТЬ
                             </button>
                         </div>
                     </div>

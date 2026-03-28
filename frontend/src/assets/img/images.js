@@ -1,5 +1,5 @@
-import background_a from "../img/background_a.png";
-import background_b from "../img/background_b.png";
+import background_a from "../img/background_a.jpg"
+import background_b from "../img/background_b.jpg";
 
 
 export const images = {
