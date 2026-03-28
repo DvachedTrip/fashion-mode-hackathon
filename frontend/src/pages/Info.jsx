@@ -63,7 +63,7 @@ export default function Info() {
     <div className={styles.wrapper}>
       {/* ... ВЕРХНЯЯ ЧАСТЬ (Хлебные крошки и Контейнер товара) остается БЕЗ ИЗМЕНЕНИЙ ... */}
       <nav className={styles.breadcrumb}>
-        <Link to="/shop" style={{ color: 'inherit', textDecoration: 'none' }}>Каталог / </Link>
+        <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}>Каталог / </Link>
         {product.category && product.category.name}
       </nav>
 

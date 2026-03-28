@@ -274,7 +274,7 @@
 /* Сетка размеров (плитка) */
 .sizeGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 4 размера в ряд */
+  grid-template-columns: repeat(4, 1fr); /* 4 размера в ряд */
   gap: 1px; /* Тонкая граница между кнопками */
   background-color: var(--border-color); /* Цвет границы */
   border: 1px solid var(--border-color);
