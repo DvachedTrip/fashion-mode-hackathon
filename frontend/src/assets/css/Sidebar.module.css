@@ -1,404 +1,155 @@
-/* Переменные для легкой кастомизации */
-:root {
-    --raum-black: #000000;
-    --raum-dark: #111111;
-    --raum-grey: #222222;
-    --raum-border: #333333;
-    --raum-text-muted: #888888;
-    --raum-white: #ffffff;
-    --transition-smooth: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.sidebar, .tryon-modal {
-    font-family: sans-serif;
-    text-transform: uppercase;
-    box-sizing: border-box;
-}
-
-/* Оверлей сайта */
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(3px); /* Эффект размытия в духе премиум брендов */
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease;
-    z-index: 999;
-}
-
-.overlay.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-/* Основной сайдбар */
+/* Базовая структура сайдбара */
 .sidebar {
-    position: fixed;
-    top: 0;
-    right: -100%; /* Гарантированный уход за экран */
-    width: 450px;
-    height: 100vh;
-    background: var(--raum-black);
-    color: var(--raum-white);
-    transition: var(--transition-smooth);
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    border-left: 1px solid var(--raum-border);
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 450px;
+  height: 100vh;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  font-family: sans-serif;
+  text-transform: uppercase;
 }
 
 .sidebar.open {
-    right: 0;
+  right: 0;
+}
+
+/* СВЕТЛАЯ ТЕМА */
+.sidebar.light, .overlay.light, .tryon-modal-overlay.light {
+  --bg: #ffffff;
+  --text: #000000;
+  --border: #e0e0e0;
+  --bubble-user: #f0f0f0;
+  --dim-text: #888888;
+  --overlay-bg: rgba(255, 255, 255, 0.7);
+}
+
+/* ТЕМНАЯ ТЕМА */
+.sidebar.dark, .overlay.dark, .tryon-modal-overlay.dark {
+  --bg: #000000;
+  --text: #ffffff;
+  --border: #222222;
+  --bubble-user: #1a1a1a;
+  --dim-text: #666666;
+  --overlay-bg: rgba(0, 0, 0, 0.8);
+}
+
+/* Применяем переменные ко всем элементам */
+.sidebar {
+  background: var(--bg);
+  color: var(--text);
+  border-left: 1px solid var(--border);
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay-bg);
+  backdrop-filter: blur(5px);
+  opacity: 0;
+  visibility: hidden;
+  z-index: 999;
+  transition: 0.3s;
+}
+
+.overlay.active {
+  opacity: 1;
+  visibility: visible;
 }
 
 .sidebar-header {
-    padding: 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--raum-border);
-}
-
-.sidebar-header h2 {
-    font-size: 14px;
-    letter-spacing: 3px;
-    margin: 0;
-    font-weight: 600;
+  padding: 30px;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
 }
 
 .close-btn {
-    background: none;
-    border: none;
-    color: var(--raum-white);
-    font-size: 22px;
-    cursor: pointer;
-    transition: opacity 0.2s;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 20px;
+  cursor: pointer;
 }
 
-.close-btn:hover {
-    opacity: 0.6;
-}
-
-/* Контент и Чат */
 .sidebar-content {
-    flex: 1;
-    overflow-y: auto;
-    padding: 25px;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Кастомный скроллбар */
-.sidebar-content::-webkit-scrollbar {
-    width: 4px;
-}
-.sidebar-content::-webkit-scrollbar-thumb {
-    background: var(--raum-border);
-}
-
-.chat-messages {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  flex: 1;
+  overflow-y: auto;
+  padding: 25px;
 }
 
 .message-user {
-    align-self: flex-end;
-    background: var(--raum-grey);
-    padding: 12px 18px;
-    max-width: 80%;
-    font-size: 12px;
-    letter-spacing: 0.5px;
+  align-self: flex-end;
+  background: var(--bubble-user);
+  padding: 12px 18px;
+  font-size: 11px;
+  border: 1px solid var(--border);
+  margin-bottom: 15px;
 }
 
 .message-bot {
-    align-self: flex-start;
-    max-width: 90%;
-    font-size: 13px;
-    line-height: 1.6;
-    letter-spacing: 0.5px;
-    color: #dfdfdf;
+  font-size: 12px;
+  line-height: 1.6;
+  margin-bottom: 15px;
 }
 
-/* Карточки продуктов в чате */
-.product-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-top: 15px;
-}
-
-.product-card-wrapper {
-    border: 1px solid var(--raum-border);
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background: #080808;
-}
-
-.product-card {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-}
-
-.product-image {
-    width: 70px;
-    height: 90px;
-    object-fit: cover;
-    background: var(--raum-grey);
-}
-
-.product-info {
-    display: flex;
-    flex-direction: column;
-    font-size: 10px;
-}
-
-.product-name {
-    color: var(--raum-white);
-    margin-bottom: 5px;
-}
-
-.product-price {
-    color: var(--raum-text-muted);
-}
-
-/* Кнопка "Примерить" внутри карточки */
-.try-on-btn {
-    background: var(--raum-white);
-    color: var(--raum-black);
-    border: none;
-    padding: 8px;
-    font-size: 10px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-/* ФУТЕР И ОСНОВНЫЕ КНОПКИ */
 .sidebar-footer {
-    padding: 30px;
-    border-top: 1px solid var(--raum-border);
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  padding: 30px;
+  border-top: 1px solid var(--border);
 }
 
 .chat-input {
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid var(--raum-border);
-    color: var(--raum-white);
-    padding: 10px 0;
-    font-size: 13px;
-    outline: none;
-    transition: border-color 0.3s;
-}
-
-.chat-input:focus {
-    border-color: var(--raum-white);
-}
-
-.footer-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.send-btn, .try-on-main-btn {
-    width: 100%;
-    padding: 15px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    cursor: pointer;
-    transition: all 0.2s;
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  padding: 12px 0;
+  margin-bottom: 20px;
+  outline: none;
 }
 
 .send-btn {
-    background: var(--raum-white);
-    color: var(--raum-black);
-    border: none;
+  width: 100%;
+  padding: 15px;
+  background: var(--text); /* Инверсия: черный на белом, белый на черном */
+  color: var(--bg);
+  border: none;
+  font-weight: bold;
+  letter-spacing: 2px;
+  cursor: pointer;
 }
 
 .try-on-main-btn {
-    background: transparent;
-    color: var(--raum-white);
-    border: 1px solid var(--raum-white);
+  width: 100%;
+  margin-top: 10px;
+  padding: 15px;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  font-weight: bold;
+  letter-spacing: 2px;
+  cursor: pointer;
 }
 
-.try-on-main-btn:hover {
-    background: var(--raum-white);
-    color: var(--raum-black);
-}
-
-/* МОДАЛЬНОЕ ОКНО */
+/* Модалка */
 .tryon-modal-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.95);
+    inset: 0;
+    background: var(--overlay-bg);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 2000;
-    animation: fadeIn 0.3s ease-out;
+    z-index: 1100;
 }
 
 .tryon-modal {
-    background: var(--raum-black);
-    width: 90%;
-    max-width: 420px;
+    background: var(--bg);
+    border: 1px solid var(--border);
     padding: 40px;
-    border: 1px solid var(--raum-border);
-    animation: slideUp 0.4s ease-out;
-}
-
-.upload-area {
-    width: 100%;
-    aspect-ratio: 3 / 4;
-    border: 1px dashed var(--raum-border);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    margin-bottom: 25px;
-    position: relative;
-}
-
-.upload-placeholder span {
-    font-size: 30px;
-    margin-bottom: 10px;
-}
-
-.generate-btn {
-    width: 100%;
-    background: var(--raum-white);
-    color: var(--raum-black);
-    padding: 15px;
-    font-weight: 700;
-    border: none;
-    cursor: pointer;
-}
-
-/* АНИМАЦИИ */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes slideUp {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
-.typing-indicator {
-    font-size: 11px;
-    color: var(--raum-text-muted);
-    margin-bottom: 10px;
-}
-
-/* Оверлей модалки (поверх всего) */
-.tryon-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.85);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000; /* Выше сайдбара */
-}
-
-.tryon-modal {
-    background: #111;
-    width: 90%;
-    max-width: 400px;
-    padding: 30px;
-    border: 1px solid #333;
-    color: #fff;
-    text-transform: uppercase;
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.modal-header h3 {
-    font-size: 16px;
-    letter-spacing: 2px;
-}
-
-.modal-header button {
-    background: none;
-    border: none;
-    color: #fff;
-    font-size: 20px;
-    cursor: pointer;
-}
-
-.modal-body {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    text-align: center;
-}
-
-.modal-body p {
-    font-size: 12px;
-    color: #888;
-    line-height: 1.5;
-}
-
-/* Зона загрузки */
-.upload-area {
-    width: 100%;
-    aspect-ratio: 3/4;
-    border: 1px dashed #444;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    overflow: hidden;
-    transition: border-color 0.2s;
-}
-
-.upload-area:hover {
-    border-color: #fff;
-}
-
-.preview-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.generate-btn {
-    background: #fff;
-    color: #000;
-    border: none;
-    padding: 15px;
-    font-weight: bold;
-    letter-spacing: 2px;
-    cursor: pointer;
-}
-
-.generate-btn:disabled {
-    background: #333;
-    color: #666;
-    cursor: not-allowed;
+    width: 400px;
+    color: var(--text);
 }

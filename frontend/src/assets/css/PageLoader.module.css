@@ -1,0 +1,31 @@
+.loaderWrapper {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-color);
+  z-index: 9999; /* Поверх всего */
+}
+
+.loader {
+  width: fit-content;
+  font-size: 50px;
+  font-family: sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--text-color);
+  background: 
+    linear-gradient(90deg, transparent 33%, var(--text-color) 0 67%, transparent 0) 
+    0/300% 100% no-repeat text;
+  animation: l2 1.5s linear infinite;
+}
+
+.loader:before {
+  content: "AVISHU"; /* Название бренда */
+}
+
+@keyframes l2 {
+  0% { background-position: 100% }
+}

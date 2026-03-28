@@ -49,6 +49,41 @@ export default function Shop() {
 
   return (
     <div className={`${styles.wrapperShop} ${theme === 'dark' ? styles.dark : styles.light}`}>
+
+      <section className={styles.heroSection}>
+        {/* Левая панель с заголовком */}
+        <div className={styles.heroPanel}>
+          <div className={styles.heroBgImage1}></div>
+          <div className={styles.heroContent}>
+            <h1 className={styles.mainTitle}>COMPLETE THE LOOK</h1>
+            <div className={styles.paginationSimple}>
+              <span className={styles.activePage}>[01]</span>
+              <span>[02]</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Правая панель с акцентным фото */}
+        <div className={styles.heroPanel}>
+          <div className={styles.heroBgImage2}></div>
+          <div className={styles.badgeSale}>Sale</div>
+          <div className={styles.heroProductInfo}>
+            <span className={styles.heroProductName}>LOULOU STUDIO TANIA SHOULDER BAG</span>
+            <span className={styles.heroProductPrice}>
+              <del>$665.00</del> $333.00
+            </span>
+          </div>
+        </div>
+        
+        {/* Крайняя правая панель (опционально для сетки 3 колонки как на скрине) */}
+        <div className={styles.heroPanel}>
+          <div className={styles.heroBgImage3}></div>
+          <div className={styles.heroProductInfo}>
+            <span className={styles.heroProductName}>GIA BORGHINI X HEIDI BIVENS HUNTER</span>
+            <span className={styles.heroProductPrice}>$415.00</span>
+          </div>
+        </div>
+      </section>
       
       <section className={styles.heroTitle}>
         <h2>КАТАЛОГ ОДЕЖДЫ</h2>

@@ -183,3 +183,135 @@
   .heroTitle { padding: 40px 20px 20px; }
   .filters { padding: 0 20px; }
 }
+
+
+/* Shop.module.css */
+
+.heroSection {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr; /* Три равные колонки */
+  width: 100%;
+  height: 80vh; /* Высота секции */
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--bg-color);
+}
+
+.heroPanel {
+  position: relative;
+  overflow: hidden;
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* Контент прижат к низу */
+}
+
+.heroPanel:last-child {
+  border-right: none;
+}
+
+/* Фоновые изображения */
+.heroBgImage1, .heroBgImage2, .heroBgImage3 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  z-index: 1;
+  transition: transform 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* Сюда вставь свои ссылки на фото */
+.heroBgImage1 { background-image: none; background-color: var(--bg-color); } /* Левая часть обычно темная/пустая */
+.heroBgImage2 { background-image: url('ссылка_на_сумку'); }
+.heroBgImage3 { background-image: url('ссылка_на_сапоги'); }
+
+.heroPanel:hover .heroBgImage2,
+.heroPanel:hover .heroBgImage3 {
+  transform: scale(1.05);
+}
+
+/* Контент внутри панелей */
+.heroContent {
+  position: relative;
+  z-index: 2;
+  padding: 40px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.mainTitle {
+  font-size: 2.5rem;
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.paginationSimple {
+  font-size: 12px;
+  font-weight: bold;
+  display: flex;
+  gap: 10px;
+}
+
+.activePage {
+  color: var(--text-color);
+}
+
+/* Информация о товаре внизу панелей */
+.heroProductInfo {
+  position: relative;
+  z-index: 2;
+  background: var(--bg-color); /* Плашка внизу как на скрине */
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border-color);
+}
+
+.heroProductName {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.heroProductPrice {
+  font-size: 10px;
+  color: var(--dim-text);
+}
+
+.heroProductPrice del {
+  margin-right: 10px;
+  opacity: 0.5;
+}
+
+/* Бейдж Sale */
+.badgeSale {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 3;
+  padding: 4px 12px;
+  border: 1px solid var(--border-color);
+  font-size: 10px;
+  text-transform: uppercase;
+  background: var(--bg-color);
+}
+
+/* Адаптив для мобилок */
+@media (max-width: 1024px) {
+  .heroSection {
+    grid-template-columns: 1fr; /* В колонку на мобильных */
+    height: auto;
+  }
+  .heroPanel {
+    height: 500px;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+}
