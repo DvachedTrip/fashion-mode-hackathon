@@ -28,9 +28,7 @@ backend/venv/
 # Django stuff:
 *.log
 local_settings.py
-db.sqlite3
 db.sqlite3-journal
-backend/db.sqlite3
 
 # Flask stuff (just in case):
 instance/
@@ -83,8 +81,6 @@ package-lock.json
 Thumbs.db
 
 # Media files
-media/
-backend/media/
 backend/tryon_requests/
 
 # AI Coding tools

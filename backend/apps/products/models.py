@@ -53,13 +53,22 @@ class ProductImage(models.Model):
     def __str__(self):
         return f"Image for {self.product.name}"
 
+class Size(models.Model):
+    name = models.CharField(max_length=50, unique=True, verbose_name="Название")
+
+    class Meta:
+        verbose_name_plural = 'Sizes'
+
+    def __str__(self):
+        return self.name
+
 class ProductSize(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='sizes')
-    size = models.CharField(max_length=50) # e.g. S, M, L, XL, 42, 44
+    size = models.ForeignKey(Size, on_delete=models.CASCADE, verbose_name="Размер")
     in_stock = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"{self.size} for {self.product.name}"
+        return f"{self.size.name} for {self.product.name}"
 
 class ProductTag(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)

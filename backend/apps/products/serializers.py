@@ -29,6 +29,8 @@ class ProductImageSerializer(serializers.ModelSerializer):
         fields = ['id', 'image', 'is_main']
 
 class ProductSizeSerializer(serializers.ModelSerializer):
+    size = serializers.CharField(source='size.name')
+    
     class Meta:
         model = ProductSize
         fields = ['id', 'size', 'in_stock']
