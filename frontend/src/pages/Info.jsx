@@ -74,11 +74,10 @@ export default function Info() {
             <p className={styles.price}>
                 {parseFloat(product.price).toLocaleString('ru-RU')} ₸
             </p>
+            <div className={styles.tabs}><button className={styles.activeTab}>ДЕТАЛИ</button></div>
             <div className={styles.detailsSection}>
-                <h3>ДЕТАЛИ</h3>
                 <p style={{ fontSize: '12px', lineHeight: '1.6', color: '#b0b0b0', marginTop: '15px' }}>{product.description}</p>
             </div>
-            <div className={styles.tabs}><button className={styles.activeTab}>ДЕТАЛИ</button></div>
         </div>
 
         <div className={styles.midCol}>
@@ -88,30 +87,83 @@ export default function Info() {
         </div>
 
         <div className={styles.rightCol}>
-            {/* Thumbnails, Size Selection, Actions (Твой текущий код) */}
-            <div className={styles.thumbnails}>
-                {product.images?.map((img) => (
-                    <img 
-                        key={img.id} 
-                        src={img.image.startsWith('http') ? img.image : `http://127.0.0.1:8000${img.image}`} 
-                        alt="thumb" 
-                        onClick={() => setMainImage(img.image.startsWith('http') ? img.image : `http://127.0.0.1:8000${img.image}`)}
-                    />
-                ))}
-            </div>
-            <div className={styles.selectionArea}>
-                {/* ... Блок выбора размера и кнопки ... */}
-                <div className={styles.actions}>
-                    <button className={styles.addBagBtn} disabled={!selectedSize}>ДОБАВИТЬ В КОРЗИНУ</button>
-                    <button className={styles.wishlistBtn}>ПРИМЕРИТЬ</button>
+          {/* 1. Блок миниатюр (Thumbnails) — уже есть на макете */}
+          <div className={styles.thumbnails}>
+            {product.images?.map((img) => {
+              const fullUrl = img.image.startsWith('http') ? img.image : `http://127.0.0.1:8000${img.image}`;
+              return (
+              <img 
+                key={img.id} 
+                src={fullUrl} 
+                alt="thumb" 
+                onClick={() => setMainImage(fullUrl)}
+                style={{ 
+                    cursor: 'pointer', 
+                    opacity: mainImage.includes(img.image) ? 1 : 0.4,
+                    transition: 'opacity 0.2s'
+                }}
+              />
+            )})}
+          </div>
+
+          {/* 2. НОВЫЙ БЛОК: ВЫБОР ПАРАМЕТРОВ (между фото и кнопками) */}
+          <div className={styles.selectionArea}>
+            
+            {/* Выбор цвета (если есть цвета в API) */}
+            {product.color && (
+              <div className={styles.colorPicker}>
+                <p>ЦВЕТ: <span>{product.color.name || 'Standard'}</span></p>
+                <div 
+                  className={styles.colorBox} 
+                  style={{ 
+                    backgroundColor: product.color.hex_code || '#000', 
+                    border: '1px solid #555' 
+                  }}
+                ></div>
+              </div>
+            )}
+
+            {/* Выбор размера (если есть размеры в API) */}
+            {product.sizes && product.sizes.length > 0 && (
+              <div className={styles.sizeSelection}>
+                <div className={styles.sizeHeader}>
+                  <p>ВЫБРАТЬ РАЗМЕР:</p>
+                  <a href="#" className={styles.sizeGuide} onClick={(e) => e.preventDefault()}>ТАБЛИЦА РАЗМЕРОВ</a>
                 </div>
-            </div>
+                <div className={styles.sizeGrid}>
+                  {product.sizes.map(sizeObj => (
+                    <button 
+                      key={sizeObj.id}
+                      className={`${styles.sizeBtn} ${selectedSize === sizeObj.size ? styles.selectedSize : ''}`}
+                      onClick={() => setSelectedSize(sizeObj.size)}
+                      disabled={!sizeObj.in_stock}
+                      style={{ opacity: sizeObj.in_stock ? 1 : 0.3 }}
+                    >
+                      {sizeObj.size}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* 3. Блок действий (Кнопки) — уже есть на макете */}
+          <div className={styles.actions}>
+            <button 
+              className={styles.addBagBtn} 
+              disabled={!selectedSize}
+              onClick={() => alert(`Added ${product.name} (Size: ${selectedSize}) to cart!`)}
+            >
+              ДОБАВИТЬ В КОРЗИНУ
+            </button>
+            <button className={styles.wishlistBtn}>ПРИМЕРИТЬ</button>
+          </div>
         </div>
       </div>
 
       {/* НОВАЯ СЕКЦИЯ: РЕКОМЕНДАЦИИ */}
-      <section className={shopStyles.heroTitle} style={{ borderTop: '1px solid var(--border-color)', marginTop: '80px' }}>
-        <h2>ВАМ ТАКЖЕ МОЖЕТ ПОНРАВИТЬСЯ</h2>
+      <section className={shopStyles.heroTitle}>
+        <h3>ВАМ ТАКЖЕ МОЖЕТ ПОНРАВИТЬСЯ</h3>
       </section>
 
       <div className={shopStyles.productGrid}>

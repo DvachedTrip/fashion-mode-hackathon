@@ -113,7 +113,7 @@
 /* RIGHT COLUMN */
 .thumbnails {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 10px;
   margin-bottom: 40px;
 }
@@ -203,4 +203,119 @@
   .container {
     grid-template-columns: 1fr;
   }
+}
+
+
+/* Контейнер для выбора (отступы) */
+.selectionArea {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Отступ между цветом и размером */
+}
+
+/* Стили выбора ЦВЕТА */
+.colorPicker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Текст слева, квадрат справа */
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--text-color);
+  border-bottom: 1px solid var(--border-color); /* Разделительная линия */
+  padding-bottom: 15px;
+}
+
+.colorPicker span {
+  color: var(--dim-text);
+  margin-left: 10px;
+}
+
+.colorBox {
+  width: 24px;
+  height: 24px;
+  border-radius: 2px; /* Чуть скругленный, но строгий */
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.colorBox:hover {
+  transform: scale(1.1); /* Легкий акцент при ховере */
+}
+
+
+/* Стили выбора РАЗМЕРА */
+.sizeSelection {
+  font-family: sans-serif;
+}
+
+.sizeHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.sizeGuide {
+  color: var(--dim-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.3s;
+  cursor: pointer;
+}
+
+.sizeGuide:hover {
+  color: var(--text-color);
+}
+
+/* Сетка размеров (плитка) */
+.sizeGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 4 размера в ряд */
+  gap: 1px; /* Тонкая граница между кнопками */
+  background-color: var(--border-color); /* Цвет границы */
+  border: 1px solid var(--border-color);
+}
+
+.sizeBtn {
+  background-color: var(--bg-color); /* Кнопки в цвет фона */
+  color: var(--text-color);
+  border: none;
+  padding: 15px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+}
+
+.sizeBtn:not(:disabled):hover {
+  background-color: var(--bg-card); /* Легкое подсвечивание */
+}
+
+/* СТИЛЬ ВЫБРАННОГО РАЗМЕРА (ИНВЕРСИЯ) */
+.selectedSize {
+  background-color: var(--text-color) !important; /* Белый фон в темной теме */
+  color: var(--bg-color) !important; /* Черный текст */
+}
+
+/* СТИЛЬ ДЛЯ ДИЗЕЙБЛЕННЫХ (Нет в наличии) */
+.sizeBtn:disabled {
+  cursor: not-allowed;
+  position: relative;
+}
+
+/* Добавляем перечеркивание для размеров, которых нет в наличии */
+.sizeBtn:disabled::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  width: 80%;
+  height: 1px;
+  background-color: var(--dim-text);
+  transform: rotate(-15deg);
 }

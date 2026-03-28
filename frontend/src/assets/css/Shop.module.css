@@ -199,7 +199,6 @@
 .heroPanel {
   position: relative;
   overflow: hidden;
-  border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   justify-content: flex-end; /* Контент прижат к низу */
@@ -227,10 +226,10 @@
 .heroBgImage2 { background-image: url('ссылка_на_сумку'); }
 .heroBgImage3 { background-image: url('ссылка_на_сапоги'); }
 
-.heroPanel:hover .heroBgImage2,
+/* .heroPanel:hover .heroBgImage2,
 .heroPanel:hover .heroBgImage3 {
   transform: scale(1.05);
-}
+} */
 
 /* Контент внутри панелей */
 .heroContent {
