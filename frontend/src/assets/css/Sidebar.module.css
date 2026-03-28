@@ -1,35 +1,32 @@
-.sidebar {
-    position: fixed;
-    top: 0;
-    right: -450px;
-    width: 450px;
-    height: 100vh;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    border-left: 1px solid var(--border-color);
-    z-index: 1000;
-    transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), background-color 0.3s, color 0.3s;
-    box-shadow: -10px 0 30px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
+/* Переменные для легкой кастомизации */
+:root {
+    --raum-black: #000000;
+    --raum-dark: #111111;
+    --raum-grey: #222222;
+    --raum-border: #333333;
+    --raum-text-muted: #888888;
+    --raum-white: #ffffff;
+    --transition-smooth: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.sidebar, .tryon-modal {
     font-family: sans-serif;
+    text-transform: uppercase;
+    box-sizing: border-box;
 }
 
-.sidebar.open {
-    right: 0;
-}
-
+/* Оверлей сайта */
 .overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(2px);
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px); /* Эффект размытия в духе премиум брендов */
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s;
+    transition: opacity 0.3s ease;
     z-index: 999;
 }
 
@@ -38,166 +35,370 @@
     visibility: visible;
 }
 
+/* Основной сайдбар */
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: -100%; /* Гарантированный уход за экран */
+    width: 450px;
+    height: 100vh;
+    background: var(--raum-black);
+    color: var(--raum-white);
+    transition: var(--transition-smooth);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid var(--raum-border);
+}
+
+.sidebar.open {
+    right: 0;
+}
+
 .sidebar-header {
-    padding: 25px;
+    padding: 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--raum-border);
 }
 
 .sidebar-header h2 {
     font-size: 14px;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
     margin: 0;
-    text-transform: uppercase;
     font-weight: 600;
 }
 
 .close-btn {
     background: none;
     border: none;
-    font-size: 20px;
+    color: var(--raum-white);
+    font-size: 22px;
     cursor: pointer;
-    color: var(--text-color);
     transition: opacity 0.2s;
 }
 
 .close-btn:hover {
-    opacity: 0.5;
+    opacity: 0.6;
 }
 
+/* Контент и Чат */
 .sidebar-content {
     flex: 1;
-    padding: 20px;
     overflow-y: auto;
+    padding: 25px;
     display: flex;
     flex-direction: column;
+}
+
+/* Кастомный скроллбар */
+.sidebar-content::-webkit-scrollbar {
+    width: 4px;
+}
+.sidebar-content::-webkit-scrollbar-thumb {
+    background: var(--raum-border);
 }
 
 .chat-messages {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-}
-
-.message-bot {
-    background-color: var(--bg-card); 
-    color: var(--text-color);
-    padding: 12px 16px;
-    border-radius: 4px;
-    max-width: 85%;
-    font-size: 14px;
-    align-self: flex-start;
-    border: 1px solid var(--border-color);
+    gap: 20px;
 }
 
 .message-user {
-    background-color: var(--text-color);
-    color: var(--bg-color);
-    padding: 12px 16px;
-    border-radius: 4px;
-    max-width: 85%;
-    font-size: 14px;
     align-self: flex-end;
+    background: var(--raum-grey);
+    padding: 12px 18px;
+    max-width: 80%;
+    font-size: 12px;
+    letter-spacing: 0.5px;
 }
 
-.sidebar-footer {
-    padding: 20px;
-    border-top: 1px solid var(--border-color);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.message-bot {
+    align-self: flex-start;
+    max-width: 90%;
+    font-size: 13px;
+    line-height: 1.6;
+    letter-spacing: 0.5px;
+    color: #dfdfdf;
 }
 
-.chat-input {
-    width: 100%;
-    padding: 12px;
-    background-color: transparent;
-    border: 1px solid var(--border-color);
-    color: var(--text-color);
-    font-family: sans-serif;
-    outline: none;
-    transition: border-color 0.2s;
-}
-
-.chat-input:focus {
-    border-color: var(--text-color);
-}
-
-.send-btn {
-    width: 100%;
-    padding: 12px;
-    background-color: var(--text-color);
-    color: var(--bg-color);
-    border: none;
-    font-weight: bold;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    cursor: pointer;
-    font-family: sans-serif;
-    transition: opacity 0.2s;
-}
-
-.send-btn:hover {
-    opacity: 0.8;
-}
-
+/* Карточки продуктов в чате */
 .product-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px;
     margin-top: 15px;
+}
+
+.product-card-wrapper {
+    border: 1px solid var(--raum-border);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #080808;
 }
 
 .product-card {
     display: flex;
-    gap: 12px;
-    background: var(--bg-color);
-    border: 1px solid var(--border-color);
-    padding: 8px;
-    border-radius: 8px;
+    gap: 15px;
     align-items: center;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.product-card:hover {
-    border-color: var(--text-color);
 }
 
 .product-image {
-    width: 60px;
-    height: 75px;
+    width: 70px;
+    height: 90px;
     object-fit: cover;
-    border-radius: 4px;
-    background-color: var(--bg-card);
+    background: var(--raum-grey);
 }
 
 .product-info {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    font-size: 10px;
 }
 
 .product-name {
-    font-weight: 600;
-    font-size: 13px;
-    color: var(--text-color);
-    margin-bottom: 4px;
+    color: var(--raum-white);
+    margin-bottom: 5px;
 }
 
 .product-price {
-    font-size: 12px;
-    color: var(--text-color);
-    opacity: 0.8;
+    color: var(--raum-text-muted);
+}
+
+/* Кнопка "Примерить" внутри карточки */
+.try-on-btn {
+    background: var(--raum-white);
+    color: var(--raum-black);
+    border: none;
+    padding: 8px;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+/* ФУТЕР И ОСНОВНЫЕ КНОПКИ */
+.sidebar-footer {
+    padding: 30px;
+    border-top: 1px solid var(--raum-border);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.chat-input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--raum-border);
+    color: var(--raum-white);
+    padding: 10px 0;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.chat-input:focus {
+    border-color: var(--raum-white);
+}
+
+.footer-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.send-btn, .try-on-main-btn {
+    width: 100%;
+    padding: 15px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.send-btn {
+    background: var(--raum-white);
+    color: var(--raum-black);
+    border: none;
+}
+
+.try-on-main-btn {
+    background: transparent;
+    color: var(--raum-white);
+    border: 1px solid var(--raum-white);
+}
+
+.try-on-main-btn:hover {
+    background: var(--raum-white);
+    color: var(--raum-black);
+}
+
+/* МОДАЛЬНОЕ ОКНО */
+.tryon-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.tryon-modal {
+    background: var(--raum-black);
+    width: 90%;
+    max-width: 420px;
+    padding: 40px;
+    border: 1px solid var(--raum-border);
+    animation: slideUp 0.4s ease-out;
+}
+
+.upload-area {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    border: 1px dashed var(--raum-border);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.upload-placeholder span {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.generate-btn {
+    width: 100%;
+    background: var(--raum-white);
+    color: var(--raum-black);
+    padding: 15px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+}
+
+/* АНИМАЦИИ */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
 .typing-indicator {
-    align-self: flex-start;
+    font-size: 11px;
+    color: var(--raum-text-muted);
+    margin-bottom: 10px;
+}
+
+/* Оверлей модалки (поверх всего) */
+.tryon-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000; /* Выше сайдбара */
+}
+
+.tryon-modal {
+    background: #111;
+    width: 90%;
+    max-width: 400px;
+    padding: 30px;
+    border: 1px solid #333;
+    color: #fff;
+    text-transform: uppercase;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-header h3 {
+    font-size: 16px;
+    letter-spacing: 2px;
+}
+
+.modal-header button {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+}
+
+.modal-body p {
     font-size: 12px;
-    color: var(--text-color);
-    opacity: 0.6;
-    margin-left: 5px;
-    margin-bottom: 5px;
+    color: #888;
+    line-height: 1.5;
+}
+
+/* Зона загрузки */
+.upload-area {
+    width: 100%;
+    aspect-ratio: 3/4;
+    border: 1px dashed #444;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    overflow: hidden;
+    transition: border-color 0.2s;
+}
+
+.upload-area:hover {
+    border-color: #fff;
+}
+
+.preview-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.generate-btn {
+    background: #fff;
+    color: #000;
+    border: none;
+    padding: 15px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    cursor: pointer;
+}
+
+.generate-btn:disabled {
+    background: #333;
+    color: #666;
+    cursor: not-allowed;
 }

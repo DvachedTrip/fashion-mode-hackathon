@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 import styles from '../assets/css/Shop.module.css';
 import { useTheme } from '../components/ThemeContext';
-import { images } from "../assets/img/images"
+// import { images } from "../assets/img/images"
 
 const API_BASE_URL = 'http://127.0.0.1:8000/api/products';
 
