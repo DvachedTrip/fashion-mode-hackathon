@@ -71,7 +71,9 @@ export default function Info() {
         {/* Код левой, средней и правой колонок (как у тебя в примере) */}
         <div className={styles.leftCol}>
             <h1 className={styles.title}>{product.brand} {product.name}</h1>
-            <p className={styles.price}>{parseFloat(product.price).toLocaleString('ru-RU')} ₽</p>
+            <p className={styles.price}>
+                {parseFloat(product.price).toLocaleString('ru-RU')} ₸
+            </p>
             <div className={styles.detailsSection}>
                 <h3>ДЕТАЛИ</h3>
                 <p style={{ fontSize: '12px', lineHeight: '1.6', color: '#b0b0b0', marginTop: '15px' }}>{product.description}</p>
@@ -124,12 +126,12 @@ export default function Info() {
                 <div className={shopStyles.imageContainer}>
                   <img src={imgUrl} alt={item.name} className={shopStyles.productImage} />
                 </div>
-                <div className={shopStyles.productInfo}>
-                  <h3 className={shopStyles.productName}>{item.brand} {item.name}</h3>
-                  <span className={shopStyles.productPrice}>
-                    {parseFloat(item.price).toLocaleString('ru-RU')} ₽
-                  </span>
-                </div>
+                  <div className={shopStyles.productInfo}>
+                    <h3 className={shopStyles.productName}>{item.brand} {item.name}</h3>
+                    <span className={shopStyles.productPrice}>
+                      {parseFloat(item.price).toLocaleString('ru-RU')} ₸
+                    </span>
+                  </div>
               </Link>
             );
           })}

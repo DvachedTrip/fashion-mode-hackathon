@@ -140,12 +140,15 @@ export default function Shop() {
                         />
                         {product.id <= 3 && <div className={styles.badge}>New in</div>}
                       </div>
-                      <div className={styles.productInfo}>
-                        <h3 className={styles.productName}>{product.brand} {product.name}</h3>
-                        <span className={styles.productPrice}>
-                          {parseFloat(product.price).toLocaleString('ru-RU')} ₽
-                        </span>
-                      </div>
+                        <div className={styles.productInfo}>
+                          <h3 className={styles.productName}>
+                            {product.brand} {product.name}
+                          </h3>
+                          <span className={styles.productPrice}>
+                            {/* Форматирование под тенге с пробелом-разделителем */}
+                            {parseFloat(product.price).toLocaleString('ru-RU')} ₸
+                          </span>
+                        </div>
                     </Link>
                   </motion.div>
                 );
