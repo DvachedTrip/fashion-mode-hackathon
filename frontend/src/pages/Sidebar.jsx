@@ -6,6 +6,7 @@ import styles from '../assets/css/Sidebar.module.css';
 const API_BASE_URL = 'http://127.0.0.1:8000/api/ai/chat';
 const TRYON_API_URL = 'http://127.0.0.1:8000/api/ai/tryon/';
 
+
 export default function Sidebar() {
     const { isCartOpen, closeCart } = useCart();
     const { theme } = useTheme(); 
@@ -26,6 +27,8 @@ export default function Sidebar() {
     const messagesEndRef = useRef(null);
     const fileInputRef = useRef(null);
     const pollingRef = useRef(null);
+
+    const formatPrice = (price) => `${parseFloat(price).toLocaleString('ru-RU')} ₸`;
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -395,7 +398,7 @@ export default function Sidebar() {
                                                         <div className={styles["product-info"]}>
                                                             <span className={styles["product-name"]}>{p.brand} {p.name}</span>
                                                             <span className={styles["product-price"]}>
-                                                                {parseFloat(p.price).toLocaleString('ru-RU')} ₽
+                                                                {formatPrice(p.price)}Т
                                                             </span>
                                                         </div>
                                                     </div>
