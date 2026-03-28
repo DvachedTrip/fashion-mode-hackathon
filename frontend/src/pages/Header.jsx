@@ -11,10 +11,11 @@ export default function Header() {
     return (
         <header className={styles["header"]}>
             <div className={styles["header-left"]}>
-                <div className={styles["logo"]}>
-                    <span style={{fontWeight: 'bold', fontSize: '24px'}}>AVISHU</span>
-                </div>
+                    <div className={styles["logo"]}>
+                        <a href="/">AVISHU</a>
+                    </div>
             </div>
+
 
             <div className={styles["header-mid"]}>
             </div>

@@ -79,3 +79,10 @@
 .theme-inactive:hover {
   color: var(--text-color);
 }
+
+.logo a{
+  text-decoration: none;
+  color: white;
+  color: var(--text-color) !important;
+  font-weight: bold;
+}
