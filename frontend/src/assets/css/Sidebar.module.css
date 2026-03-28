@@ -96,9 +96,25 @@
   margin-bottom: 15px;
 }
 
+.message-text {
+  text-transform: none;
+  word-wrap: break-word;
+}
+
 .sidebar-footer {
   padding: 30px;
   border-top: 1px solid var(--border);
+}
+
+.footer-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.chat-messages {
+  display: flex;
+  flex-direction: column;
 }
 
 .chat-input {
@@ -115,7 +131,7 @@
 .send-btn {
   width: 100%;
   padding: 15px;
-  background: var(--text); /* Инверсия: черный на белом, белый на черном */
+  background: var(--text);
   color: var(--bg);
   border: none;
   font-weight: bold;
@@ -123,38 +139,126 @@
   cursor: pointer;
 }
 
-.try-on-main-btn {
+/* Кнопка примерки под сообщением */
+.tryon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   width: 100%;
-  margin-top: 10px;
-  padding: 15px;
+  margin-top: 12px;
+  padding: 14px 20px;
   background: transparent;
   color: var(--text);
   border: 1px solid var(--border);
-  font-weight: bold;
+  font-size: 10px;
+  font-weight: 700;
   letter-spacing: 2px;
   cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  text-transform: uppercase;
+  font-family: sans-serif;
+  position: relative;
+  overflow: hidden;
 }
 
-/* Модалка */
-.tryon-modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: var(--overlay-bg);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1100;
+.tryon-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--text);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: 0;
 }
 
-.tryon-modal {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    padding: 40px;
-    width: 400px;
-    color: var(--text);
+.tryon-btn:hover::before {
+  transform: scaleX(1);
 }
 
-/* --- Базовые переменные для модального окна --- */
+.tryon-btn:hover {
+  color: var(--bg);
+  border-color: var(--text);
+}
+
+.tryon-btn span,
+.tryon-btn-icon {
+  position: relative;
+  z-index: 1;
+}
+
+.tryon-btn-icon {
+  font-size: 14px;
+}
+
+/* Карточки продуктов в чате */
+.product-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.product-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  transition: border-color 0.2s;
+}
+
+.product-card:hover {
+  border-color: var(--text);
+}
+
+.product-image {
+  width: 55px;
+  height: 70px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.product-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.product-name {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.product-price {
+  font-size: 10px;
+  color: var(--dim-text);
+  letter-spacing: 0.5px;
+}
+
+.typing-indicator {
+  font-size: 11px;
+  color: var(--dim-text);
+  padding: 10px 0;
+  letter-spacing: 1px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* ========================================
+   МОДАЛЬНОЕ ОКНО ПРИМЕРКИ
+   ======================================== */
+
 .tryon-modal-overlay.light {
     --modal-bg: #ffffff;
     --modal-text: #000000;
@@ -173,7 +277,6 @@
     --modal-upload-bg: #0a0a0a;
 }
 
-/* --- Оверлей модалки --- */
 .tryon-modal-overlay {
     position: fixed;
     top: 0;
@@ -185,15 +288,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 2000; /* Поверх сайдбара */
+    z-index: 2000;
     animation: fadeIn 0.3s ease-out;
 }
 
-/* --- Контейнер модалки --- */
 .tryon-modal {
     background: var(--modal-bg);
     width: 90%;
-    max-width: 440px;
+    max-width: 480px;
+    max-height: 90vh;
+    overflow-y: auto;
     padding: 40px;
     border: 1px solid var(--modal-border);
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
@@ -201,6 +305,7 @@
     text-transform: uppercase;
     font-family: sans-serif;
     animation: modalSlideUp 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+    color: var(--modal-text);
 }
 
 .modal-header {
@@ -238,6 +343,58 @@
     letter-spacing: 1px;
     margin-bottom: 25px;
     line-height: 1.5;
+}
+
+/* --- Элементы образа в модалке --- */
+.modal-products {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--modal-border);
+}
+
+.modal-label {
+    font-size: 9px !important;
+    letter-spacing: 2px !important;
+    color: var(--modal-muted) !important;
+    margin-bottom: 14px !important;
+    font-weight: 600;
+}
+
+.modal-product-list {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+}
+
+.modal-product-item {
+    flex-shrink: 0;
+    width: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.modal-product-item img {
+    width: 70px;
+    height: 88px;
+    object-fit: cover;
+    border: 1px solid var(--modal-border);
+}
+
+.modal-product-item span {
+    font-size: 8px;
+    text-align: center;
+    letter-spacing: 0.5px;
+    color: var(--modal-muted);
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
 /* --- Зона загрузки фото --- */
@@ -296,6 +453,8 @@
     letter-spacing: 2px;
     cursor: pointer;
     transition: all 0.3s;
+    text-transform: uppercase;
+    font-family: sans-serif;
 }
 
 .generate-btn:disabled {
@@ -307,6 +466,89 @@
 .generate-btn:not(:disabled):hover {
     opacity: 0.9;
     letter-spacing: 3px;
+}
+
+/* --- Состояние обработки --- */
+.processing-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.processing-animation {
+    margin-bottom: 30px;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 2px solid var(--modal-border);
+    border-top-color: var(--modal-text);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.processing-text {
+    font-size: 12px !important;
+    letter-spacing: 3px !important;
+    color: var(--modal-text) !important;
+    margin-bottom: 10px !important;
+    font-weight: 600;
+}
+
+.processing-hint {
+    font-size: 10px !important;
+    color: var(--modal-muted) !important;
+    letter-spacing: 1px !important;
+}
+
+.processing-steps {
+    font-size: 9px !important;
+    color: var(--modal-muted) !important;
+    letter-spacing: 1px !important;
+    margin-bottom: 8px !important;
+    text-transform: uppercase;
+}
+
+/* --- Результат --- */
+.result-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.result-badge {
+    font-size: 10px;
+    letter-spacing: 3px;
+    font-weight: 700;
+    color: var(--modal-text);
+    margin-bottom: 20px;
+    padding: 8px 20px;
+    border: 1px solid var(--modal-text);
+    animation: fadeIn 0.5s ease;
+}
+
+.result-img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border: 1px solid var(--modal-border);
+    animation: imageFadeIn 0.8s ease;
+}
+
+/* --- Ошибка --- */
+.tryon-error {
+    margin-top: 15px;
+    padding: 12px 16px;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    color: #d32f2f;
+    border: 1px solid #d32f2f;
+    text-transform: none;
+    line-height: 1.5;
 }
 
 /* --- Анимации --- */
@@ -325,95 +567,31 @@
     to { opacity: 1; filter: blur(0); }
 }
 
-
-/* --- АДАПТИВ ДЛЯ SIDEBAR (Mobile & Tablet) --- */
-
-@media (max-width: 768px) {
-  .sidebar {
-    width: 100%; /* Сайдбар на весь экран */
-    right: -100%; /* Уезжает полностью за край */
-    border-left: none;
-  }
-
-  /* Уменьшаем отступы, чтобы контент чата не был слишком узким */
-  .sidebar-header {
-    padding: 20px;
-  }
-
-  .sidebar-content {
-    padding: 15px;
-  }
-
-  .sidebar-footer {
-    padding: 20px;
-    padding-bottom: calc(20px + env(safe-area-inset-bottom)); /* Учитываем "полоску" на iPhone */
-  }
-
-  /* Сообщения делаем чуть крупнее для удобства чтения с экрана телефона */
-  .message-user {
-    max-width: 90%;
-    font-size: 13px;
-    padding: 10px 15px;
-  }
-
-  .message-bot {
-    font-size: 13px;
-    max-width: 95%;
-  }
-
-  /* Кнопки в футере делаем выше, чтобы по ним было легче попасть пальцем */
-  .send-btn, .try-on-main-btn {
-    padding: 18px;
-    font-size: 12px;
-  }
-
-  /* --- Адаптив модального окна Virtual Try-On --- */
-  .tryon-modal {
-    width: 100%;
-    height: 100%; /* На мобилках модалка может открываться на весь экран */
-    max-width: none;
-    padding: 25px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    border: none;
-    box-shadow: none;
-  }
-
-  .modal-header {
-    position: absolute;
-    top: 20px;
-    left: 25px;
-    right: 25px;
-    margin-bottom: 0;
-  }
-
-  .upload-area {
-    aspect-ratio: 1 / 1.2; /* Делаем чуть компактнее, чтобы влезла кнопка и текст */
-    max-height: 50vh;
-  }
-
-  .generate-btn {
-    padding: 20px;
-    position: sticky;
-    bottom: 0;
-  }
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
-/* Фикс для маленьких экранов (iPhone SE) */
-@media (max-height: 670px) {
-  .upload-area {
-    max-height: 40vh;
-  }
-  .modal-body p {
-    margin-bottom: 15px;
-  }
-  .sidebar-header h2 {
-    font-size: 18px;
-  }
+/* --- Scrollbar styles --- */
+.tryon-modal::-webkit-scrollbar {
+    width: 4px;
 }
 
-/* Плавный оверлей для iOS */
-.overlay {
-  -webkit-tap-highlight-color: transparent;
+.tryon-modal::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.tryon-modal::-webkit-scrollbar-thumb {
+    background: var(--modal-border);
+}
+
+.sidebar-content::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-content::-webkit-scrollbar-thumb {
+    background: var(--border);
 }

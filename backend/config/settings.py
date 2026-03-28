@@ -107,3 +107,5 @@ MEDIA_ROOT = BASE_DIR / config('MEDIA_ROOT', default='media')
 MAX_UPLOAD_SIZE_MB = config('MAX_UPLOAD_SIZE_MB', cast=int, default=10)
 
 GEMINI_API_KEY = config('GEMINI_API_KEY', default='')
+OPENAI_API_KEY = config('OPENAI_API_KEY', default='')
+REPLICATE_API_KEY = config('REPLICATE_API_KEY', default='')
