@@ -315,3 +315,103 @@
     border-bottom: 1px solid var(--border-color);
   }
 }
+
+
+@media (max-width: 1024px) {
+  .heroSection {
+    grid-template-columns: 1fr; /* Колонки встают друг под друга */
+    height: auto; 
+  }
+
+  .heroPanel {
+    height: 60vh; /* Ограничиваем высоту на мобильных */
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .mainTitle {
+    font-size: 1.8rem; /* Уменьшаем заголовок */
+  }
+
+  .heroContent {
+    padding: 20px;
+    gap: 20px;
+  }
+}
+
+
+@media (max-width: 768px) {
+  /* Заголовок страницы */
+  .heroTitle {
+    padding: 40px 20px 20px;
+  }
+  
+  .heroTitle h2 {
+    font-size: 24px;
+  }
+
+  /* Фильтры: разрешаем горизонтальный скролл, если ссылок много */
+  .filters {
+    padding: 0 20px;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch; /* Плавный скролл на iOS */
+    justify-content: flex-start;
+    gap: 20px;
+  }
+
+  .filters::-webkit-scrollbar {
+    display: none; /* Прячем некрасивый скроллбар */
+  }
+
+  .filterLinks {
+    gap: 15px;
+  }
+
+  .filterBtn {
+    border-left: none;
+    padding-left: 0;
+    margin-left: auto; /* Прижимаем кнопку Filter вправо */
+  }
+
+  /* Сетка товаров: переходим на 2 колонки */
+  .gridInner {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .productCard:nth-child(odd) {
+    border-right: 1px solid var(--border-color);
+  }
+
+  .productCard:nth-child(even) {
+    border-right: none;
+  }
+
+  /* На мобильных убираем ховер-эффект (масштабирование), так как нет мышки */
+  .productCard:hover .productImage {
+    transform: none;
+  }
+
+  .productInfo {
+    padding: 12px;
+    flex-direction: column; /* Название и цена друг под другом */
+    gap: 4px;
+  }
+
+  .productName {
+    max-width: 100%;
+    font-size: 10px;
+  }
+}
+
+/* Совсем маленькие экраны (iPhone SE) */
+@media (max-width: 480px) {
+  /* Если хочешь 1 колонку — раскомментируй ниже. 
+     Но 2 колонки обычно выглядят более "модно" для каталога. */
+  /* .gridInner { grid-template-columns: 1fr; } 
+     .productCard { border-right: none; } */
+
+  .heroPanel {
+    height: 50vh;
+  }
+}

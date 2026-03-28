@@ -324,3 +324,96 @@
     from { opacity: 0; filter: blur(10px); }
     to { opacity: 1; filter: blur(0); }
 }
+
+
+/* --- АДАПТИВ ДЛЯ SIDEBAR (Mobile & Tablet) --- */
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%; /* Сайдбар на весь экран */
+    right: -100%; /* Уезжает полностью за край */
+    border-left: none;
+  }
+
+  /* Уменьшаем отступы, чтобы контент чата не был слишком узким */
+  .sidebar-header {
+    padding: 20px;
+  }
+
+  .sidebar-content {
+    padding: 15px;
+  }
+
+  .sidebar-footer {
+    padding: 20px;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom)); /* Учитываем "полоску" на iPhone */
+  }
+
+  /* Сообщения делаем чуть крупнее для удобства чтения с экрана телефона */
+  .message-user {
+    max-width: 90%;
+    font-size: 13px;
+    padding: 10px 15px;
+  }
+
+  .message-bot {
+    font-size: 13px;
+    max-width: 95%;
+  }
+
+  /* Кнопки в футере делаем выше, чтобы по ним было легче попасть пальцем */
+  .send-btn, .try-on-main-btn {
+    padding: 18px;
+    font-size: 12px;
+  }
+
+  /* --- Адаптив модального окна Virtual Try-On --- */
+  .tryon-modal {
+    width: 100%;
+    height: 100%; /* На мобилках модалка может открываться на весь экран */
+    max-width: none;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: none;
+    box-shadow: none;
+  }
+
+  .modal-header {
+    position: absolute;
+    top: 20px;
+    left: 25px;
+    right: 25px;
+    margin-bottom: 0;
+  }
+
+  .upload-area {
+    aspect-ratio: 1 / 1.2; /* Делаем чуть компактнее, чтобы влезла кнопка и текст */
+    max-height: 50vh;
+  }
+
+  .generate-btn {
+    padding: 20px;
+    position: sticky;
+    bottom: 0;
+  }
+}
+
+/* Фикс для маленьких экранов (iPhone SE) */
+@media (max-height: 670px) {
+  .upload-area {
+    max-height: 40vh;
+  }
+  .modal-body p {
+    margin-bottom: 15px;
+  }
+  .sidebar-header h2 {
+    font-size: 18px;
+  }
+}
+
+/* Плавный оверлей для iOS */
+.overlay {
+  -webkit-tap-highlight-color: transparent;
+}

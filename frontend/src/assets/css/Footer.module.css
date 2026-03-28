@@ -149,3 +149,156 @@
     gap: 20px;
   }
 }
+
+
+.footer {
+  width: 100%;
+  font-family: sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: var(--bg-color);
+}
+
+.footer-top {
+  padding: 80px 40px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  border-top: 1px solid var(--border-color);
+}
+
+.thanks-title {
+  font-size: clamp(40px, 8vw, 80px);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -2px;
+  margin-bottom: 40px;
+  text-transform: uppercase;
+  overflow: hidden;
+}
+
+.avishu-row {
+  display: block;
+  opacity: 0;
+  transform: translateX(-100px);
+  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.2s ease;
+}
+
+.indent {
+  display: block;
+  margin-left: 20%;
+  opacity: 0;
+  transform: translateX(100px);
+  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.2s ease;
+  transition-delay: 0.2s;
+}
+
+.collab-info {
+  display: flex;
+  justify-content: space-between;
+  max-width: 80%;
+  margin-left: 20%;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  opacity: 0.8;
+}
+
+.collab-left, .collab-right {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 2s ease, transform 2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.collab-left {
+  transition-delay: 0.8s; 
+}
+
+.collab-right {
+  transition-delay: 1.8s;
+}
+
+.visible .avishu-row,
+.visible .indent,
+.visible .collab-left,
+.visible .collab-right {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+.footer-bar {
+  background-color: var(--bg-card); 
+  color: var(--dim-text);
+  padding: 15px 20px;
+  font-size: 10px;
+  text-align: center;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.footer-bottom {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  padding: 60px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.like-button {
+  margin-bottom: 25px;
+}
+
+.icon-blue {
+  background-color: #0047ff;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.icon-blue:hover {
+  transform: scale(1.15) rotate(10deg);
+}
+
+.project-info h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  letter-spacing: 1px;
+}
+
+.stats {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  color: var(--dim-text);
+  font-size: 12px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.date {
+  color: var(--dim-text);
+  font-size: 11px;
+  opacity: 0.5;
+}
+
+@media (max-width: 768px) {
+  .thanks-title {
+    font-size: 40px;
+  }
+  .indent, .collab-info {
+    margin-left: 0;
+    max-width: 100%;
+  }
+  .collab-info {
+    flex-direction: column;
+    gap: 20px;
+  }
+}

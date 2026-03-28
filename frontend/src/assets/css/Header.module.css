@@ -86,3 +86,48 @@
   color: var(--text-color) !important;
   font-weight: bold;
 }
+
+
+
+/* АДАПТИВ ПОД МОБИЛЬНЫЕ УСТРОЙСТВА (iPhone, Android) */
+@media (max-width: 768px) {
+  .header {
+    padding: 12px 15px; /* Уменьшаем отступы */
+  }
+
+  .header-mid {
+    display: none; /* Прячем центральное меню (Shop, Info и т.д.) */
+    /* Обычно их выносят в выпадающее меню или в Sidebar */
+  }
+
+  .header-left, .header-right {
+    flex: 1;
+  }
+
+  .logo-text {
+    font-size: 20px; /* Уменьшаем логотип */
+    letter-spacing: -0.5px;
+  }
+
+  .header-right {
+    gap: 15px; /* Сужаем расстояние между иконками/кнопками */
+  }
+
+  /* Скрываем текстовый переключатель тем на очень маленьких экранах, 
+     либо оставляем только активную букву (L/D) */
+  .theme-toggle {
+    font-size: 10px;
+  }
+
+  /* Если хочешь оставить переключатель, можно сократить слова */
+  .theme-toggle span:not(.theme-active):not(.theme-inactive) {
+    display: none; /* Скрывает слэш или лишний текст */
+  }
+}
+
+/* Специфический фикс для iPhone (Safe Area) */
+@supports (padding: env(safe-area-inset-top)) {
+  .header {
+    padding-top: calc(15px + env(safe-area-inset-top));
+  }
+}
