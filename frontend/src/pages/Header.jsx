@@ -28,7 +28,7 @@ export default function Header() {
                         className={theme === 'dark' ? styles["theme-active"] : styles["theme-inactive"]}
                         style={{ cursor: 'pointer' }}
                     >
-                        DARK
+                        ТЕМНЫЙ
                     </span> 
                     / 
                     <span 
@@ -36,7 +36,7 @@ export default function Header() {
                         className={theme === 'light' ? styles["theme-active"] : styles["theme-inactive"]}
                         style={{ cursor: 'pointer' }}
                     >
-                        LIGHT
+                        СВЕТЛЫЙ
                     </span> 
                     ]
                 </div>

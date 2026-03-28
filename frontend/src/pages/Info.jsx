@@ -66,7 +66,6 @@ export default function Info() {
 
           <div className={styles.tabs}>
             <button className={styles.activeTab}>DETAILS</button>
-            <button>SIZE & FIT</button>
           </div>
         </div>
 

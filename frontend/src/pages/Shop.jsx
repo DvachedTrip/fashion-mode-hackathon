@@ -51,7 +51,7 @@ export default function Shop() {
     <div className={`${styles.wrapperShop} ${theme === 'dark' ? styles.dark : styles.light}`}>
       
       <section className={styles.heroTitle}>
-        <h2>All Clothing</h2>
+        <h2>КАТАЛОГ ОДЕЖДЫ</h2>
       </section>
 
       {/* Filters */}
@@ -59,7 +59,7 @@ export default function Shop() {
         <div className={styles.filterLinks}>
           <a href="#" className={!selectedCategory ? styles.active : ''} 
              onClick={(e) => { e.preventDefault(); setSelectedCategory(''); }}>
-            All
+            Все
           </a>
           {categories.map((cat) => (
             <React.Fragment key={cat.id}>
@@ -71,7 +71,6 @@ export default function Shop() {
             </React.Fragment>
           ))}
         </div>
-        <button className={styles.filterBtn}>Filter & Sort <Plus size={14} /></button>
       </section>
 
       {/* Product Grid */}

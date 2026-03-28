@@ -242,7 +242,7 @@ export default function Sidebar() {
                             className={styles["send-btn"]} 
                             disabled={isLoading || !message.trim()}
                         >
-                            {isLoading ? "..." : "SEND"}
+                            {isLoading ? "..." : "ОТПРАВИТЬ"}
                         </button>
                         
                         <button 
@@ -250,7 +250,7 @@ export default function Sidebar() {
                             className={styles["try-on-main-btn"]}
                             onClick={() => setIsTryOnModalOpen(true)}
                         >
-                            TRY ON
+                            ПРИМЕРИТЬ
                         </button>
                     </div>
                 </form>

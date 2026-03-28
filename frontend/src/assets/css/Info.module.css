@@ -107,8 +107,8 @@
   opacity: 0.3;
 }
 
-.navBtn:first-child { left: -30px; }
-.navBtn:last-child { right: -30px; }
+.navBtn:first-child { left: -5%; }
+.navBtn:last-child { right: -5%; }
 
 /* RIGHT COLUMN */
 .thumbnails {
