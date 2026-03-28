@@ -153,3 +153,174 @@
     width: 400px;
     color: var(--text);
 }
+
+/* --- Базовые переменные для модального окна --- */
+.tryon-modal-overlay.light {
+    --modal-bg: #ffffff;
+    --modal-text: #000000;
+    --modal-border: #e0e0e0;
+    --modal-overlay: rgba(255, 255, 255, 0.85);
+    --modal-muted: #888888;
+    --modal-upload-bg: #f9f9f9;
+}
+
+.tryon-modal-overlay.dark {
+    --modal-bg: #111111;
+    --modal-text: #ffffff;
+    --modal-border: #333333;
+    --modal-overlay: rgba(0, 0, 0, 0.9);
+    --modal-muted: #666666;
+    --modal-upload-bg: #0a0a0a;
+}
+
+/* --- Оверлей модалки --- */
+.tryon-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--modal-overlay);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000; /* Поверх сайдбара */
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* --- Контейнер модалки --- */
+.tryon-modal {
+    background: var(--modal-bg);
+    width: 90%;
+    max-width: 440px;
+    padding: 40px;
+    border: 1px solid var(--modal-border);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    position: relative;
+    text-transform: uppercase;
+    font-family: sans-serif;
+    animation: modalSlideUp 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.modal-header h3 {
+    font-size: 14px;
+    letter-spacing: 3px;
+    margin: 0;
+    font-weight: 700;
+    color: var(--modal-text);
+}
+
+.modal-header button {
+    background: none;
+    border: none;
+    color: var(--modal-text);
+    font-size: 20px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.modal-header button:hover {
+    opacity: 0.5;
+}
+
+/* --- Тело модалки --- */
+.modal-body p {
+    font-size: 11px;
+    color: var(--modal-muted);
+    letter-spacing: 1px;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+/* --- Зона загрузки фото --- */
+.upload-area {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    background: var(--modal-upload-bg);
+    border: 1px dashed var(--modal-border);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.upload-area:hover {
+    border-color: var(--modal-text);
+}
+
+.upload-placeholder {
+    text-align: center;
+    color: var(--modal-muted);
+}
+
+.upload-placeholder span {
+    font-size: 40px;
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 200;
+}
+
+.upload-placeholder p {
+    font-size: 10px;
+    margin: 0;
+}
+
+.preview-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    animation: imageFadeIn 0.5s ease;
+}
+
+/* --- Кнопка генерации --- */
+.generate-btn {
+    width: 100%;
+    margin-top: 30px;
+    padding: 18px;
+    background: var(--modal-text);
+    color: var(--modal-bg);
+    border: none;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.generate-btn:disabled {
+    background: var(--modal-border);
+    color: var(--modal-muted);
+    cursor: not-allowed;
+}
+
+.generate-btn:not(:disabled):hover {
+    opacity: 0.9;
+    letter-spacing: 3px;
+}
+
+/* --- Анимации --- */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modalSlideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes imageFadeIn {
+    from { opacity: 0; filter: blur(10px); }
+    to { opacity: 1; filter: blur(0); }
+}

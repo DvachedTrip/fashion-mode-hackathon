@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useCart } from '../components/CartContext';
+import { useTheme } from '../components/ThemeContext'; 
 import styles from '../assets/css/Sidebar.module.css';
 
 const API_BASE_URL = 'http://127.0.0.1:8000/api/ai/chat';
 
 export default function Sidebar() {
     const { isCartOpen, closeCart } = useCart();
+    const { theme } = useTheme(); 
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState([]);
     const [sessionId, setSessionId] = useState(null);
@@ -18,24 +20,24 @@ export default function Sidebar() {
     const messagesEndRef = useRef(null);
     const fileInputRef = useRef(null);
 
-    // Функция для прокрутки чата вниз
+    // Автоматическая прокрутка чата вниз
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages, isLoading]);
 
-    // Инициализация сессии чата
+    // Инициализация сессии чата с проверкой на валидность
     useEffect(() => {
         const initSession = async () => {
             let currentSessionId = localStorage.getItem('chatSessionId');
             
-            if (!currentSessionId) {
+            const createNewSession = async () => {
                 try {
                     const res = await fetch(`${API_BASE_URL}/sessions/`, { method: 'POST' });
                     if (res.ok) {
                         const data = await res.json();
-                        currentSessionId = data.session_key;
-                        localStorage.setItem('chatSessionId', currentSessionId);
-                        setSessionId(currentSessionId);
+                        const newId = data.session_key;
+                        localStorage.setItem('chatSessionId', newId);
+                        setSessionId(newId);
                         setMessages([{ 
                             role: 'assistant', 
                             text: 'Привет! Я твой персональный ИИ-стилист. Помочь тебе подобрать образ на сегодня или найти конкретную вещь?' 
@@ -44,13 +46,16 @@ export default function Sidebar() {
                 } catch (error) {
                     console.error("Ошибка при создании сессии:", error);
                 }
+            };
+
+            if (!currentSessionId) {
+                await createNewSession();
             } else {
                 try {
                     const res = await fetch(`${API_BASE_URL}/sessions/${currentSessionId}/messages/`);
                     if (res.status === 404) {
-                        // Stale session — create a fresh one
                         localStorage.removeItem('chatSessionId');
-                        currentSessionId = null;
+                        await createNewSession();
                     } else if (res.ok) {
                         setSessionId(currentSessionId);
                         const data = await res.json();
@@ -62,29 +67,9 @@ export default function Sidebar() {
                                 text: 'Привет! Я твой персональный ИИ-стилист. Помочь тебе подобрать образ на сегодня?' 
                             }]);
                         }
-                        return; // session is valid, stop here
                     }
                 } catch (error) {
                     console.error("Ошибка при загрузке истории:", error);
-                }
-
-                // If we reach here, session was invalid — create a new one
-                if (!currentSessionId) {
-                    try {
-                        const res = await fetch(`${API_BASE_URL}/sessions/`, { method: 'POST' });
-                        if (res.ok) {
-                            const data = await res.json();
-                            currentSessionId = data.session_key;
-                            localStorage.setItem('chatSessionId', currentSessionId);
-                            setSessionId(currentSessionId);
-                            setMessages([{ 
-                                role: 'assistant', 
-                                text: 'Привет! Я твой персональный ИИ-стилист. Помочь тебе подобрать образ на сегодня или найти конкретную вещь?' 
-                            }]);
-                        }
-                    } catch (error) {
-                        console.error("Ошибка при создании новой сессии:", error);
-                    }
                 }
             }
         };
@@ -94,19 +79,15 @@ export default function Sidebar() {
         }
     }, [isCartOpen, sessionId]);
 
-    // Обработка загрузки фото пользователем
+    // Обработка загрузки фото
     const handlePhotoUpload = (e) => {
         const file = e.target.files[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setUserPhoto(reader.result);
-            };
-            reader.readAsDataURL(file);
+            setUserPhoto(URL.createObjectURL(file));
         }
     };
 
-    // Отправка текстового сообщения
+    // Отправка сообщения
     const handleSendMessage = async (e) => {
         e.preventDefault();
         const text = message.trim();
@@ -146,15 +127,15 @@ export default function Sidebar() {
 
     return (
         <>
-            {/* Оверлей для закрытия сайдбара */}
+            {/* Оверлей */}
             <div 
-                className={`${styles["overlay"]} ${isCartOpen ? styles["active"] : ""}`} 
+                className={`${styles["overlay"]} ${isCartOpen ? styles["active"] : ""} ${theme === 'dark' ? styles.dark : styles.light}`} 
                 onClick={closeCart}
             />
             
-            {/* МОДАЛЬНОЕ ОКНО ПРИМЕРКИ */}
+            {/* Модальное окно примерки */}
             {isTryOnModalOpen && (
-                <div className={styles["tryon-modal-overlay"]}>
+                <div className={`${styles["tryon-modal-overlay"]} ${theme === 'dark' ? styles.dark : styles.light}`}>
                     <div className={styles["tryon-modal"]}>
                         <div className={styles["modal-header"]}>
                             <h3>VIRTUAL TRY-ON</h3>
@@ -197,8 +178,12 @@ export default function Sidebar() {
                 </div>
             )}
 
-            {/* ОСНОВНОЙ САЙДБАР */}
-            <aside className={`${styles["sidebar"]} ${isCartOpen ? styles["open"] : ""}`}>
+            {/* Сайдбар */}
+            <aside className={`
+                ${styles["sidebar"]} 
+                ${isCartOpen ? styles["open"] : ""} 
+                ${theme === 'dark' ? styles.dark : styles.light}
+            `}>
                 <div className={styles["sidebar-header"]}>
                     <h2>AI STYLIST</h2>
                     <button onClick={closeCart} className={styles["close-btn"]}>✕</button>
@@ -250,7 +235,6 @@ export default function Sidebar() {
                     </div>
                 </div>
 
-                {/* ФУТЕР С КНОПКАМИ */}
                 <form className={styles["sidebar-footer"]} onSubmit={handleSendMessage}>
                     <input 
                         type="text" 
