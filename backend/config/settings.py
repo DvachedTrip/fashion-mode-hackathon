@@ -109,3 +109,5 @@ MAX_UPLOAD_SIZE_MB = config('MAX_UPLOAD_SIZE_MB', cast=int, default=10)
 GEMINI_API_KEY = config('GEMINI_API_KEY', default='')
 OPENAI_API_KEY = config('OPENAI_API_KEY', default='')
 REPLICATE_API_KEY = config('REPLICATE_API_KEY', default='')
+KIE_API_KEY = config('KIE_API_KEY', default='')
+TRYON_PROVIDER = config('TRYON_PROVIDER', default='replicate')  # 'replicate' or 'kie'
