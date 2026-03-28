@@ -15,6 +15,7 @@ import { ThemeProvider } from './components/ThemeContext';
 import Sidebar from './pages/Sidebar';
 import SmoothScroll from './components/SmoothScroll';
 import PageLoader from './components/PageLoader'; // Твой лоадер с градиентом "AVISHU"
+import ScrollToTop from './components/ScrollToTop';
 
 
 // Варианты анимации только для главной страницы
@@ -29,6 +30,7 @@ function App() {
   const location = useLocation();
   const [isPageLoading, setIsPageLoading] = useState(false);
   
+  
   // Логика: показываем лоадер только при первом посещении / или переходе на /
   useEffect(() => {
     // Проверяем, что мы именно на главной
@@ -42,10 +44,13 @@ function App() {
     }
   }, [location.pathname]); // Срабатывает при смене пути
 
+  
+
   return (
     <ThemeProvider>
       <SmoothScroll>
         <CartProvider>
+          <ScrollToTop />
           <div className={styles["all"]}>
             
             {/* Анимированный экран загрузки (только если isPageLoading === true) */}
