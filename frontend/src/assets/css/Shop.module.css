@@ -208,6 +208,8 @@
   border-right: none;
 }
 
+
+
 /* Фоновые изображения */
 .heroBgImage1, .heroBgImage2, .heroBgImage3 {
   position: absolute;
@@ -413,4 +415,60 @@
   .heroPanel {
     height: 50vh;
   }
+}
+
+
+/* Контейнер-ссылка для карточки в Hero */
+.heroProductCard {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  text-decoration: none;
+  overflow: hidden;
+}
+
+/* Наложение информации поверх фото в Hero */
+.heroProductInfo {
+  position: absolute;
+  bottom: 30px;
+  left: 30px;
+  z-index: 5;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.heroProductInfo span {
+  font-size: 10px;
+  letter-spacing: 2px;
+  opacity: 0.8;
+}
+
+.heroProductInfo p {
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 5px;
+  letter-spacing: 1px;
+}
+
+/* Затемнение низа фото, чтобы белый текст читался на любом фоне */
+.heroBgImage2::after, .heroBgImage3::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 40%);
+  z-index: 2;
+}
+
+/* Фикс для img внутри Hero */
+.heroBgImage2 img, .heroBgImage3 img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Легкий зум при наведении на всю панель */
+.heroPanel:hover img {
+  transform: scale(1.03);
 }

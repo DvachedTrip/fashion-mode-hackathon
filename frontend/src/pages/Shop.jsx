@@ -49,13 +49,14 @@ export default function Shop() {
       .then(data => setProducts(data.results || data))
       .finally(() => setIsLoading(false));
   }, [selectedCategory]);
+  
 
   return (
     <div className={`${styles.wrapperShop} ${theme === 'dark' ? styles.dark : styles.light}`}>
       <Footer />
 
       <section className={styles.heroSection}>
-        {/* Левая панель с заголовком */}
+        {/* Левая панель с заголовком (оставляем как есть) */}
         <div className={styles.heroPanel}>
           <div className={styles.heroBgImage1}></div>
           <div className={styles.heroContent}>
@@ -63,18 +64,41 @@ export default function Shop() {
           </div>
         </div>
 
-        {/* Правая панель с акцентным фото */}
+        {/* Правая панель — Первая карточка товара (динамическая) */}
         <div className={styles.heroPanel}>
-          <div className={styles.heroBgImage2}>
-            <img src={images['background_a']} alt="a" />
-          </div>
+          {products.length > 0 ? (
+            <Link to={`/info/${products[0].id}`} className={styles.heroProductCard}>
+              <div className={styles.heroBgImage2}>
+                <img 
+                  src={products[0].main_image_url?.startsWith('http') 
+                    ? products[0].main_image_url 
+                    : `http://127.0.0.1:8000${products[0].main_image_url || ''}`} 
+                  alt={products[0].name} 
+                />
+              </div>
+
+            </Link>
+          ) : (
+            <div className={styles.heroBgImage2}><div className={styles.loaderSmall}></div></div>
+          )}
         </div>
         
-        {/* Крайняя правая панель (опционально для сетки 3 колонки как на скрине) */}
+        {/* Крайняя правая панель — Вторая карточка товара (динамическая) */}
         <div className={styles.heroPanel}>
-          <div className={styles.heroBgImage3}>
-            <img src={images['background_b']} alt="b" />
-          </div>
+          {products.length > 1 ? (
+            <Link to={`/info/${products[1].id}`} className={styles.heroProductCard}>
+              <div className={styles.heroBgImage3}>
+                <img 
+                  src={products[1].main_image_url?.startsWith('http') 
+                    ? products[1].main_image_url 
+                    : `http://127.0.0.1:8000${products[1].main_image_url || ''}`} 
+                  alt={products[1].name} 
+                />
+              </div>
+            </Link>
+          ) : (
+            <div className={styles.heroBgImage3}><div className={styles.loaderSmall}></div></div>
+          )}
         </div>
       </section>
       
@@ -157,6 +181,13 @@ export default function Shop() {
           )}
         </AnimatePresence>
       </main>
+      {/* <section className={styles.heroSection}>
+      <div className={styles.heroPanel}>
+        <div className={styles.heroBgImage2}>
+          <img src={images['background_a']} alt="a" />
+        </div>
+      </div>
+      </section> */}
     </div>
   );
 }

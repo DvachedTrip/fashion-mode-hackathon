@@ -595,3 +595,274 @@
 .sidebar-content::-webkit-scrollbar-thumb {
     background: var(--border);
 }
+
+/* ========================================
+   АДАПТИВ ПОД МОБИЛЬНЫЕ УСТРОЙСТВА
+   ======================================== */
+
+@media (max-width: 768px) {
+    /* --- Сайдбар на весь экран --- */
+    .sidebar {
+        width: 100%;
+        right: -100%;
+        border-left: none;
+    }
+
+    .sidebar-header {
+        padding: 20px;
+    }
+
+    .sidebar-content {
+        padding: 20px;
+    }
+
+    /* Увеличиваем размер текста сообщений для читабельности */
+    .message-user {
+        font-size: 13px;
+        max-width: 85%;
+    }
+
+    .message-bot {
+        font-size: 13px;
+    }
+
+    /* Делаем карточки продуктов в чате чуть крупнее */
+    .product-card {
+        padding: 12px;
+    }
+
+    .product-image {
+        width: 65px;
+        height: 85px;
+    }
+
+    .product-name {
+        font-size: 11px;
+    }
+
+    /* Кнопки в футере делаем выше (удобство тапа) */
+    .sidebar-footer {
+        padding: 20px;
+        padding-bottom: calc(20px + env(safe-area-inset-bottom)); /* Учет "челки" снизу на iPhone */
+    }
+
+    .send-btn, .tryon-btn {
+        padding: 18px;
+        font-size: 12px;
+    }
+
+    /* --- МОДАЛЬНОЕ ОКНО ПРИМЕРКИ --- */
+    .tryon-modal {
+        width: 100%;
+        height: 100%;
+        max-width: none;
+        max-height: 100vh;
+        border: none;
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+        border-radius: 0;
+    }
+
+    .modal-header {
+        margin-bottom: 20px;
+        padding-top: env(safe-area-inset-top); /* Учет верхней челки */
+    }
+
+    .modal-header h3 {
+        font-size: 12px;
+        letter-spacing: 2px;
+    }
+
+    /* Список продуктов в модалке делаем прокручиваемым и аккуратным */
+    .modal-product-list {
+        gap: 15px;
+    }
+
+    .modal-product-item {
+        width: 90px;
+    }
+
+    .modal-product-item img {
+        width: 90px;
+        height: 110px;
+    }
+
+    /* Зона загрузки: ограничиваем высоту, чтобы кнопка генерации не улетала вниз */
+    .upload-area {
+        aspect-ratio: 1 / 1.1; 
+        max-height: 40vh;
+    }
+
+    /* Кнопка генерации фиксируется внизу или получает больше отступов */
+    .generate-btn {
+        margin-top: auto; /* Прижимаем к низу если места много */
+        padding: 20px;
+        font-size: 12px;
+    }
+
+    /* Состояние обработки (спиннер) */
+    .processing-container {
+        padding: 40px 10px;
+        flex: 1;
+        justify-content: center;
+    }
+}
+
+/* Фикс для очень маленьких экранов (iPhone SE) */
+@media (max-width: 380px) {
+    .modal-header h3 {
+        font-size: 10px;
+        letter-spacing: 1px;
+    }
+    
+    .upload-area {
+        max-height: 35vh;
+    }
+    
+    .modal-product-item {
+        width: 75px;
+    }
+    
+    .modal-product-item img {
+        width: 75px;
+        height: 95px;
+    }
+}
+
+
+
+.tryon-modal {
+    background: var(--modal-bg);
+    width: 95%; /* Почти на весь экран на маленьких устройствах */
+    max-width: 800px; /* Увеличили с 480px, чтобы влезла большая фотка и список вещей */
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 30px; /* Немного уменьшим падинги, чтобы дать место контенту */
+    border: 1px solid var(--modal-border);
+    position: relative;
+    text-transform: uppercase;
+    font-family: sans-serif;
+    animation: modalSlideUp 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+    color: var(--modal-text);
+    
+    /* Добавим Flex, чтобы содержимое распределялось грамотнее */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Зона загрузки и превью */
+.upload-area {
+    width: 100%;
+    /* Убираем жесткий aspect-ratio или делаем его более свободным */
+    min-height: 400px; 
+    max-height: 65vh; /* Ограничиваем высоту, чтобы не улетала за экран */
+    background: var(--modal-upload-bg);
+    border: 1px dashed var(--modal-border);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+}
+
+/* САМОЕ ВАЖНОЕ: как ложится картинка */
+.preview-img, .result-img {
+    width: 100%;
+    height: 100%;
+    /* Меняем 'cover' (обрезка) на 'contain' (фото целиком) */
+    object-fit: contain; 
+    background-color: var(--modal-upload-bg); /* Чтобы пустые поля по бокам не резали глаз */
+    animation: imageFadeIn 0.5s ease;
+}
+
+/* Контейнер результата тоже расширяем */
+.result-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.modal-product-list {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding-bottom: 15px;
+    margin-bottom: 10px;
+    /* Скрываем стандартный скроллбар для чистоты */
+    scrollbar-width: none; 
+}
+
+.modal-product-list::-webkit-scrollbar {
+    display: none;
+}
+
+.modal-product-item {
+    flex: 0 0 100px; /* Фиксированная ширина карточек в списке */
+    text-align: center;
+}
+
+.modal-product-item img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border: 1px solid var(--modal-border);
+    margin-bottom: 5px;
+}
+
+
+/* Контейнер для кнопок */
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+/* Переопределяем существующую кнопку, чтобы она не занимала 100% принудительно */
+.generate-btn {
+    flex: 1; /* Занимает все свободное пространство */
+    margin-top: 0 !important;
+    padding: 18px;
+    background: var(--modal-text);
+    color: var(--modal-bg);
+    border: none;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: opacity 0.3s;
+}
+
+.generate-btn:disabled {
+    background: var(--modal-border);
+    color: var(--modal-muted);
+}
+
+/* Стили для кнопки Скачать */
+.download-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 25px;
+    background: transparent;
+    color: var(--modal-text);
+    border: 1px solid var(--modal-border);
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.download-btn:hover {
+    background: var(--modal-text);
+    color: var(--modal-bg);
+    border-color: var(--modal-text);
+}
