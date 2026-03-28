@@ -28,7 +28,7 @@ function App() {
             <main>
               <Routes>
                 <Route path="/" element={<Shop />} />
-                <Route path="/info" element={<Info />} />
+                <Route path="/info/:id" element={<Info />} />
               </Routes>
             </main>
 

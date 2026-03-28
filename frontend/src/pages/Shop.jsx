@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import styles from '../assets/css/Shop.module.css';
 import { useTheme } from '../components/ThemeContext';
 // import { images } from "../assets/img/images"
@@ -106,7 +107,7 @@ export default function Shop() {
                 : `http://127.0.0.1:8000${product.main_image_url || ''}`;
 
             return (
-              <div key={product.id} className={styles.productCard}>
+              <Link key={product.id} to={`/info/${product.id}`} className={styles.productCard} style={{ textDecoration: 'none', color: 'inherit' }}>
                 <div className={styles.imageContainer}>
                   <img 
                     src={imgUrl} 
@@ -130,7 +131,7 @@ export default function Shop() {
                     {parseFloat(product.price).toLocaleString('ru-RU')} ₽
                   </span>
                 </div>
-              </div>
+              </Link>
             );
           })
         )}
