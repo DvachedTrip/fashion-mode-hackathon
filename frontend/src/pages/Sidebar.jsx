@@ -51,22 +51,23 @@ export default function Sidebar() {
     }, [messages, isLoading]);
 
     useEffect(() => {
-    if (isCartOpen) {
-        // Блокируем прокрутку страницы
-        document.body.style.overflow = 'hidden';
-        // Если у вас есть отступ справа из-за исчезновения скроллбара, можно добавить:
-        // document.body.style.paddingRight = '15px'; 
-    } else {
-        // Возвращаем прокрутку
-        document.body.style.overflow = 'unset';
-        // document.body.style.paddingRight = '0px';
-    }
+        if (isCartOpen) {
+            // Блокируем прокрутку страницы
+            document.body.style.overflow = 'hidden';
+            // Если у вас есть отступ справа из-за исчезновения скроллбара, можно добавить:
+            // document.body.style.paddingRight = '15px'; 
+        } else {
+            // Возвращаем прокрутку
+            document.body.style.overflow = 'unset';
+            // document.body.style.paddingRight = '0px';
+        }
 
-    // Чистим эффект при размонтировании компонента (на всякий случай)
-    return () => {
-        document.body.style.overflow = 'unset';
-    };
-}, [isCartOpen]);
+        // Чистим эффект при размонтировании компонента (на всякий случай)
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    
+    }, [isCartOpen]);
 
     useEffect(() => {
         // Guard against double-init in React StrictMode
