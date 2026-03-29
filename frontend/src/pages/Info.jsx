@@ -1,19 +1,43 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import styles from '../assets/css/Info.module.css';
 // Импортируем стили магазина для сетки товаров внизу
 import shopStyles from '../assets/css/Shop.module.css'; 
+import sidebarStyles from '../assets/css/Sidebar.module.css';
+import { useTheme } from '../components/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const API_BASE_URL = 'http://127.0.0.1:8000/api/products';
+const TRYON_API_URL = 'http://127.0.0.1:8000/api/ai/tryon/';
 
 export default function Info() {
   const { id } = useParams();
+  const { theme } = useTheme();
   const [product, setProduct] = useState(null);
   const [recommendations, setRecommendations] = useState([]); // Состояние для других товаров
   const [loading, setLoading] = useState(true);
   const [selectedSize, setSelectedSize] = useState('');
   const [mainImage, setMainImage] = useState('');
+
+  // Try-on state
+  const [isTryOnModalOpen, setIsTryOnModalOpen] = useState(false);
+  const [userPhoto, setUserPhoto] = useState(null);
+  const [userPhotoFile, setUserPhotoFile] = useState(null);
+  const [tryOnStatus, setTryOnStatus] = useState('idle');
+  const [tryOnResult, setTryOnResult] = useState(null);
+  const [tryOnError, setTryOnError] = useState(null);
+  
+  const fileInputRef = useRef(null);
+  const pollingRef = useRef(null);
+
+  // cleanup polling
+  useEffect(() => {
+      return () => {
+          if (pollingRef.current) {
+              clearInterval(pollingRef.current);
+          }
+      };
+  }, []);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -70,10 +94,269 @@ export default function Info() {
       .catch(err => console.error("Error loading recommendations:", err));
   }, [id]); // Массив зависимостей [id] заставит код сработать при смене товара
 
+  const handlePhotoUpload = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+          setUserPhoto(URL.createObjectURL(file));
+          setUserPhotoFile(file);
+      }
+  };
+
+  const openTryOnModal = () => {
+      setUserPhoto(null);
+      setUserPhotoFile(null);
+      setTryOnStatus('idle');
+      setTryOnResult(null);
+      setTryOnError(null);
+      setIsTryOnModalOpen(true);
+  };
+
+  const closeTryOnModal = () => {
+      setIsTryOnModalOpen(false);
+      if (pollingRef.current) {
+          clearInterval(pollingRef.current);
+          pollingRef.current = null;
+      }
+  };
+
+  const startTryOn = async () => {
+      if (!userPhotoFile || !product) return;
+      
+      let sessionId = localStorage.getItem('chatSessionId');
+      if (!sessionId) {
+          sessionId = 'session_' + Math.random().toString(36).substring(2, 15);
+          localStorage.setItem('chatSessionId', sessionId);
+      }
+      
+      setTryOnStatus('uploading');
+      setTryOnError(null);
+      
+      const formData = new FormData();
+      formData.append('session_key', sessionId);
+      formData.append('user_photo', userPhotoFile);
+      formData.append('product_ids', product.id);
+
+      try {
+          const res = await fetch(TRYON_API_URL, {
+              method: 'POST',
+              body: formData,
+          });
+
+          if (!res.ok) {
+              const errData = await res.json().catch(() => ({}));
+              throw new Error(errData.detail || errData.error_message || 'Ошибка при создании запроса');
+          }
+
+          const data = await res.json();
+          
+          if (data.status === 'done' && data.result_image_url) {
+              setTryOnResult(data.result_image_url);
+              setTryOnStatus('done');
+          } else if (data.status === 'failed') {
+              setTryOnError(data.error_message || 'Генерация не удалась');
+              setTryOnStatus('failed');
+          } else {
+              setTryOnStatus('processing');
+              startPolling(data.id);
+          }
+      } catch (error) {
+          console.error("TryOn error:", error);
+          setTryOnError(error.message);
+          setTryOnStatus('failed');
+      }
+  };
+
+  const startPolling = (requestId) => {
+      if (pollingRef.current) clearInterval(pollingRef.current);
+      
+      pollingRef.current = setInterval(async () => {
+          try {
+              const res = await fetch(`${TRYON_API_URL}${requestId}/`);
+              if (!res.ok) return;
+              
+              const data = await res.json();
+              
+              if (data.status === 'done' && data.result_image_url) {
+                  clearInterval(pollingRef.current);
+                  pollingRef.current = null;
+                  setTryOnResult(data.result_image_url);
+                  setTryOnStatus('done');
+              } else if (data.status === 'failed') {
+                  clearInterval(pollingRef.current);
+                  pollingRef.current = null;
+                  setTryOnError(data.error_message || 'Генерация не удалась');
+                  setTryOnStatus('failed');
+              }
+          } catch (err) {
+              console.error("Polling error:", err);
+          }
+      }, 3000);
+  };
+
+  const renderTryOnModalContent = () => {
+      if (tryOnStatus === 'done' && tryOnResult) {
+          return (
+              <div className={sidebarStyles["result-container"]}>
+                  <div className={sidebarStyles["result-badge"]}>ОБРАЗ ГОТОВ</div>
+                  <img src={tryOnResult} alt="Результат примерки" className={sidebarStyles["result-img"]} />
+                  
+                  <div className={sidebarStyles["modal-actions"]}>
+                      <button 
+                          className={sidebarStyles["generate-btn"]}
+                          onClick={() => {
+                              setTryOnStatus('idle');
+                              setTryOnResult(null);
+                              setUserPhoto(null);
+                              setUserPhotoFile(null);
+                          }}
+                      >
+                          ДРУГОЕ ФОТО
+                      </button>
+                      <a 
+                          href={tryOnResult} 
+                          download="ai_look.jpg" 
+                          target="_blank" 
+                          rel="noreferrer"
+                          className={sidebarStyles["download-btn"]}
+                      >
+                          СКАЧАТЬ
+                      </a>
+                  </div>
+              </div>
+          );
+      }
+
+      if (tryOnStatus === 'uploading' || tryOnStatus === 'processing') {
+          return (
+              <div className={sidebarStyles["processing-container"]}>
+                  <div className={sidebarStyles["processing-animation"]}>
+                      <div className={sidebarStyles["spinner"]} />
+                  </div>
+                  <p className={sidebarStyles["processing-text"]}>
+                      {tryOnStatus === 'uploading' ? 'ЗАГРУЖАЕМ ОБРАЗ...' : 'ГЕНЕРИРУЕМ ОБРАЗ...'}
+                  </p>
+                  <p className={sidebarStyles["processing-steps"]}>
+                      1 вещь в образе
+                  </p>
+                  <p className={sidebarStyles["processing-hint"]}>
+                      Это может занять до 2 минут
+                  </p>
+              </div>
+          );
+      }
+
+      if (tryOnStatus === 'failed') {
+          return (
+              <div className={sidebarStyles["processing-container"]}>
+                  <div className={sidebarStyles["tryon-error"]}>
+                      {tryOnError || 'Произошла ошибка при генерации'}
+                  </div>
+                  <div className={sidebarStyles["modal-actions"]}>
+                      <button 
+                          className={sidebarStyles["generate-btn"]}
+                          onClick={() => {
+                              setTryOnStatus('idle');
+                              setTryOnError(null);
+                          }}
+                      >
+                          ПОПРОБОВАТЬ СНОВА
+                      </button>
+                  </div>
+              </div>
+          );
+      }
+
+      const imgUrl = product.images?.find(img => img.is_main)?.image || product.main_image_url || '';
+      const fullImgUrl = imgUrl.startsWith('http') ? imgUrl : `http://127.0.0.1:8000${imgUrl}`;
+
+      return (
+          <>
+              <div className={sidebarStyles["modal-products"]}>
+                  <p className={sidebarStyles["modal-label"]}>Элементы образа</p>
+                  <div className={sidebarStyles["modal-product-list"]}>
+                      <div key={product.id} className={sidebarStyles["modal-product-item"]}>
+                          <img 
+                              src={fullImgUrl} 
+                              alt={product.name}
+                              onError={(e) => { 
+                                  e.target.src = 'https://via.placeholder.com/70x88/f0f0f0/666666?text=No+Photo'; 
+                              }}
+                          />
+                          <span>{product.brand} {product.name}</span>
+                      </div>
+                  </div>
+              </div>
+
+              <p>Загрузите свое фото в полный рост</p>
+              
+              <div 
+                  className={sidebarStyles["upload-area"]} 
+                  onClick={() => fileInputRef.current.click()}
+              >
+                  {userPhoto ? (
+                      <img src={userPhoto} alt="Превью" className={sidebarStyles["preview-img"]} />
+                  ) : (
+                      <div className={sidebarStyles["upload-placeholder"]}>
+                          <span>+</span>
+                          <p>Нажмите для загрузки</p>
+                      </div>
+                  )}
+              </div>
+              
+              <input 
+                  type="file" 
+                  ref={fileInputRef} 
+                  onChange={handlePhotoUpload} 
+                  style={{ display: 'none' }} 
+                  accept="image/*"
+              />
+
+              {tryOnError && (
+                  <div className={sidebarStyles["tryon-error"]}>
+                      {tryOnError}
+                  </div>
+              )}
+              
+              <div className={sidebarStyles["modal-actions"]}>
+                  <button 
+                      className={sidebarStyles["generate-btn"]}
+                      disabled={!userPhoto}
+                      onClick={startTryOn}
+                  >
+                      ПРИМЕРИТЬ ОБРАЗ
+                  </button>
+                  {userPhoto && (
+                      <a 
+                          href={userPhoto} 
+                          download="original_photo.jpg" 
+                          className={sidebarStyles["download-btn"]}
+                      >
+                          ↓
+                      </a>
+                  )}
+              </div>
+          </>
+      );
+  };
+
   if (loading) return <div className={styles.wrapper} style={{ textAlign: 'center', padding: '100px', color: '#fff' }}>Загрузка...</div>;
   if (!product) return <div className={styles.wrapper} style={{ textAlign: 'center', padding: '100px', color: '#fff' }}>Не найдено.</div>;
 
   return (
+    <>
+      {isTryOnModalOpen && (
+          <div className={`${sidebarStyles["tryon-modal-overlay"]} ${theme === 'dark' ? sidebarStyles.dark : sidebarStyles.light}`}>
+              <div className={sidebarStyles["tryon-modal"]}>
+                  <div className={sidebarStyles["modal-header"]}>
+                      <h3>VIRTUAL TRY-ON</h3>
+                      <button onClick={closeTryOnModal}>✕</button>
+                  </div>
+                  <div className={sidebarStyles["modal-body"]}>
+                      {renderTryOnModalContent()}
+                  </div>
+              </div>
+          </div>
+      )}
     <div className={styles.wrapper}>
       {/* ... ВЕРХНЯЯ ЧАСТЬ (Хлебные крошки и Контейнер товара) остается БЕЗ ИЗМЕНЕНИЙ ... */}
       <nav className={styles.breadcrumb}>
@@ -193,7 +476,7 @@ export default function Info() {
             >
               ДОБАВИТЬ В КОРЗИНУ
             </button>
-            <button className={styles.wishlistBtn}>ПРИМЕРИТЬ</button>
+            <button className={styles.wishlistBtn} onClick={openTryOnModal}>ПРИМЕРИТЬ</button>
           </div>
         </div>
       </div>
@@ -227,5 +510,6 @@ export default function Info() {
         </div>
       </div>
     </div>
+    </>
   );
 }
