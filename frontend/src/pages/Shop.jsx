@@ -35,6 +35,8 @@ export default function Shop() {
   const [heroProducts, setHeroProducts] = useState([]);
   const [heroIndex, setHeroIndex] = useState(0);
 
+  const [visibleCount, setVisibleCount] = useState(12);
+
   const flattenCategories = (cats) => {
     const result = [];
     const traverse = (items) => {
@@ -103,6 +105,12 @@ export default function Shop() {
 
     return () => clearInterval(interval);
   }, [heroProducts.length]);
+  
+  useEffect(() => {
+    setHeroIndex(0);
+    setVisibleCount(12); // Добавьте эту строку в существующий useEffect сброса
+  }, [selectedCategory]);
+
 
   return (
     <div className={`${styles.wrapperShop} ${theme === 'dark' ? styles.dark : styles.light}`}>
@@ -193,36 +201,59 @@ export default function Shop() {
         </div>
       </section>
 
+      {/* Product Grid */}
       <main className={styles.productGrid}>
         <AnimatePresence mode="wait">
           {isLoading ? (
             <motion.div key="loading" className={styles.statusMessage}>Загрузка...</motion.div>
+          ) : products.length === 0 ? (
+            <motion.div key="empty" className={styles.statusMessage}>Не найдено.</motion.div>
           ) : (
-            <motion.div 
-              key={selectedCategory || 'all'}
-              className={styles.gridInner} 
-              initial="hidden" animate="visible" exit="exit"
-              variants={{ visible: { transition: { staggerChildren: 0.05 } } }}
-            >
-              {products.map((product) => (
-                <motion.div key={product.id} variants={ghostVariants}>
-                  {/* ... ваша карточка товара ... */}
-                  <Link to={`/info/${product.id}`} className={styles.productCard}>
-                    <div className={styles.imageContainer}>
-                      <img 
-                        src={product.main_image_url?.startsWith('http') ? product.main_image_url : `http://127.0.0.1:8000${product.main_image_url || ''}`} 
-                        alt={product.name}
-                        className={styles.productImage}
-                      />
-                    </div>
-                    <div className={styles.productInfo}>
-                      <h3 className={styles.productName}>{product.brand} {product.name}</h3>
-                      <span className={styles.productPrice}>{parseFloat(product.price).toLocaleString('ru-RU')} ₸</span>
-                    </div>
-                  </Link>
-                </motion.div>
-              ))}
-            </motion.div>
+            <div className={styles.gridContainer}> {/* Обертка для сетки и кнопки */}
+              <motion.div 
+                key={selectedCategory || 'all'}
+                className={styles.gridInner} 
+                initial="hidden" 
+                animate="visible" 
+                exit="exit"
+                variants={{ visible: { transition: { staggerChildren: 0.05 } } }}
+              >
+                {/* Рендерим только часть массива */}
+                {products.slice(0, visibleCount).map((product) => (
+                  <motion.div key={product.id} variants={ghostVariants}>
+                    <Link to={`/info/${product.id}`} className={styles.productCard}>
+                      <div className={styles.imageContainer}>
+                        <img 
+                          src={product.main_image_url?.startsWith('http') 
+                            ? product.main_image_url 
+                            : `http://127.0.0.1:8000${product.main_image_url || ''}`} 
+                          alt={product.name}
+                          className={styles.productImage}
+                        />
+                      </div>
+                      <div className={styles.productInfo}>
+                        <h3 className={styles.productName}>{product.brand} {product.name}</h3>
+                        <span className={styles.productPrice}>
+                          {parseFloat(product.price).toLocaleString('ru-RU')} ₸
+                        </span>
+                      </div>
+                    </Link>
+                  </motion.div>
+                ))}
+              </motion.div>
+
+              {/* Кнопка "Показать еще" */}
+              {products.length > visibleCount && (
+                <div className={styles.loadMoreContainer}>
+                  <button 
+                    className={`${styles.loadMoreButton} ${theme === 'dark' ? styles.darkBtn : styles.lightBtn}`} 
+                    onClick={() => setVisibleCount(prev => prev + 12)}
+                  >
+                    ПОКАЗАТЬ ЕЩЕ
+                  </button>
+                </div>
+              )}
+            </div>
           )}
         </AnimatePresence>
       </main>

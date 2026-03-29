@@ -34,7 +34,7 @@
   border-bottom: 1px solid var(--border-color);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -44,7 +44,7 @@
 .filterLinks {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 10px;
 }
 
 .filterLinks a {
@@ -477,4 +477,300 @@
 /* Легкий зум при наведении на всю панель */
 .heroPanel:hover img {
   transform: scale(1.03);
+}
+
+
+
+.loadMoreContainer {
+    display: flex;
+    justify-content: center;
+    padding: 40px 0;
+    width: 100%;
+}
+
+.loadMoreButton {
+  width: 200px;
+    background: none;
+    border: 1px solid currentColor; /* Подстроится под тему (белый в dark, черный в light) */
+    padding: 12px 40px;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.loadMoreButton:hover {
+    background-color: var(--text-color); /* Если у вас есть переменные, или просто инвертируйте цвет */
+    color: var(--bg-color);
+    opacity: 0.8;
+}
+
+
+
+.loadMoreContainer {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 60px 0 100px; /* Увеличим отступ снизу для чистоты дизайна */
+}
+
+.loadMoreButton {
+    background: transparent;
+    padding: 16px 60px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border: 1px solid;
+    outline: none;
+}
+
+/* --- Стили для ТЕМНОЙ темы --- */
+.darkBtn {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.darkBtn:hover {
+    background-color: #ffffff;
+    color: #000000;
+    border-color: #ffffff;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* --- Стили для СВЕТЛОЙ темы --- */
+.lightBtn {
+    color: #000000;
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+.lightBtn:hover {
+    background-color: #000000;
+    color: #ffffff;
+    border-color: #000000;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Адаптив --- */
+@media (max-width: 768px) {
+    .loadMoreContainer {
+        padding: 40px 20px;
+    }
+    
+    .loadMoreButton {
+        width: 100%; /* На мобилках кнопка на всю ширину удобнее */
+        padding: 14px 20px;
+        font-size: 12px;
+        letter-spacing: 1.5px;
+    }
+}
+
+
+.loadMoreContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 60px 0 100px; /* Большой отступ снизу для "воздуха" */
+}
+
+.loadMoreButton {
+  background: transparent;
+  padding: 18px 80px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border: 1px solid;
+  position: relative;
+  overflow: hidden;
+}
+
+/* --- ТЕМНЫЙ РЕЖИМ --- */
+.darkBtn {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.darkBtn:hover {
+  background-color: #ffffff;
+  color: #000000;
+  border-color: #ffffff;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+/* --- СВЕТЛЫЙ РЕЖИМ --- */
+.lightBtn {
+  color: #000000;
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.lightBtn:hover {
+  background-color: #000000;
+  color: #ffffff;
+  border-color: #000000;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+}
+
+/* --- АДАПТИВНОСТЬ --- */
+
+/* Планшеты (до 1024px) */
+@media (max-width: 1024px) {
+  .loadMoreButton {
+    padding: 16px 60px;
+    font-size: 13px;
+  }
+}
+
+/* Мобильные устройства (до 768px) */
+@media (max-width: 768px) {
+  .loadMoreContainer {
+    padding: 40px 20px 80px; /* Уменьшаем отступы на мобилках */
+  }
+
+  .loadMoreButton {
+    width: 100%; /* Кнопка на всю ширину экрана */
+    max-width: 400px; /* Но не слишком огромная на широких телефонах */
+    padding: 15px 20px;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+  }
+}
+
+/* Маленькие телефоны (до 480px) */
+@media (max-width: 480px) {
+  .loadMoreButton {
+    padding: 14px 10px;
+    letter-spacing: 1px;
+  }
+}
+
+
+/* Базовый адаптив для планшетов и смартфонов */
+@media (max-width: 768px) {
+    .loadMoreContainer {
+        padding: 40px 15px; /* Уменьшаем внешние отступы */
+    }
+    
+    .loadMoreButton {
+        width: 100%; 
+        padding: 14px 20px;
+        font-size: 12px;
+        letter-spacing: 1.5px;
+    }
+}
+
+/* Экстремальный адаптив для экранов 320px - 375px */
+@media (max-width: 375px) {
+    .loadMoreContainer {
+        width: 200px;
+        padding: 10px 10px; /* Минимальные отступы по краям */
+        display: flex;
+        justify-content: center;
+    }
+
+    .loadMoreButton {
+        width: 100%;
+        padding: 12px 10px;
+        font-size: 11px; /* Слегка уменьшаем шрифт, чтобы текст не разбивался */
+        letter-spacing: 1px; /* Сужаем межсимвольный интервал */
+        min-height: 48px; /* Оптимальная высота для нажатия пальцем (Apple HIG) */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+/* 1. Основной контейнер — всегда на всю ширину и центрирует содержимое */
+.loadMoreContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  /* Отступы: 60px сверху, 0 по бокам, 100px снизу для отделения от футера */
+  padding: 60px 0 100px; 
+  box-sizing: border-box;
+}
+
+/* 2. Базовые стили кнопки */
+.loadMoreButton {
+  background: transparent;
+  padding: 18px 80px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border: 1px solid;
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 200px; /* Чтобы кнопка не была слишком узкой на десктопе */
+}
+
+/* --- Цветовые схемы --- */
+.darkBtn {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.darkBtn:hover {
+  background-color: #ffffff;
+  color: #000000;
+  border-color: #ffffff;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.lightBtn {
+  color: #000000;
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.lightBtn:hover {
+  background-color: #000000;
+  color: #ffffff;
+  border-color: #000000;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+}
+
+/* --- АДАПТИВНОСТЬ --- */
+
+/* Планшеты и средние экраны */
+@media (max-width: 768px) {
+  .loadMoreContainer {
+    padding: 40px 20px 80px;
+  }
+
+  .loadMoreButton {
+    width: 100%; /* На мобильных кнопка тянется по контейнеру */
+    max-width: 400px; /* Ограничиваем максимальную ширину для красоты */
+    padding: 15px 20px;
+    font-size: 12px;
+  }
+}
+
+/* Маленькие телефоны (iPhone SE, Android 320px) */
+@media (max-width: 375px) {
+  .loadMoreContainer {
+    /* ОШИБКА БЫЛА ТУТ: Убираем width: 200px, ставим 100% */
+    width: 100%; 
+    padding: 30px 15px 60px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .loadMoreButton {
+    width: 100%; /* Кнопка занимает всю доступную ширину внутри паддингов контейнера */
+    padding: 12px 10px;
+    font-size: 11px;
+    letter-spacing: 1px;
+    min-height: 48px; /* Высота для удобного нажатия пальцем */
+  }
 }
