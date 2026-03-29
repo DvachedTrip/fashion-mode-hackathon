@@ -31,8 +31,6 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 *.sqlite3
-media/
-# backend/media/
 
 # Flask stuff (just in case):
 instance/
@@ -85,7 +83,6 @@ package-lock.json
 Thumbs.db
 
 # Media files
-backend/tryon_requests/
 
 # AI Coding tools
 .gemini/
