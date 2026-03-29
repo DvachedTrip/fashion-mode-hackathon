@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useCart } from '../components/CartContext';
 import { useTheme } from '../components/ThemeContext'; 
 import styles from '../assets/css/Sidebar.module.css';
+import { Link } from 'react-router-dom';
 
 const API_BASE_URL = 'http://127.0.0.1:8000/api/ai/chat';
 const TRYON_API_URL = 'http://127.0.0.1:8000/api/ai/tryon/';
@@ -448,7 +449,13 @@ export default function Sidebar() {
                                                     : `http://127.0.0.1:8000${p.main_image_url}`;
                                                     
                                                 return (
-                                                    <div key={p.id} className={styles["product-card"]}>
+                                                    /* Обернули в Link и указали путь к info по id */
+                                                    <Link 
+                                                        to={`/info/${p.id}`} 
+                                                        key={p.id} 
+                                                        className={styles["product-card"]}
+                                                        onClick={closeCart} // Рекомендую закрывать сайдбар при переходе
+                                                    >
                                                         <img 
                                                             src={imgUrl} 
                                                             alt={p.name} 
@@ -463,7 +470,7 @@ export default function Sidebar() {
                                                                 {formatPrice(p.price)}Т
                                                             </span>
                                                         </div>
-                                                    </div>
+                                                    </Link>
                                                 );
                                             })}
                                         </div>

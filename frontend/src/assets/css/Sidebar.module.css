@@ -449,8 +449,8 @@
 
 /* --- Кнопка генерации --- */
 .generate-btn {
-    width: 100%;
-    margin-top: 30px;
+    flex: 1;
+    margin-top: 0 !important;
     padding: 18px;
     background: var(--modal-text);
     color: var(--modal-bg);
@@ -459,9 +459,14 @@
     font-weight: 700;
     letter-spacing: 2px;
     cursor: pointer;
-    transition: all 0.3s;
     text-transform: uppercase;
-    font-family: sans-serif;
+    transition: opacity 0.3s;
+    
+    /* ДОБАВЬТЕ ЭТИ СТРОКИ */
+    position: relative;
+    overflow: hidden; 
+    display: block;
+    width: 100%;
 }
 
 .generate-btn:disabled {
@@ -949,13 +954,19 @@
     flex: 0 0 80px; /* Делаем карточки чуть уже */
 }
 
-/* Кнопки внизу */
 .modal-actions {
     display: flex;
     gap: 10px;
     width: 100%;
-    margin-top: 15px;
-    padding-top: 10px;
+    margin-top: 20px;
+    /* Убедитесь, что нет горизонтального скролла */
+    overflow: hidden; 
+}
+
+/* Очистка для контейнера тела модалки */
+.modal-body {
+    width: 100%;
+    overflow-x: hidden; /* Запрещаем горизонтальный скролл полностью */
 }
 
 .generate-btn {
@@ -975,4 +986,32 @@
     .modal-product-item img {
         height: 70px;
     }
+}
+
+.tryon-modal {
+    /* ... ваши существующие стили ... */
+    scrollbar-width: none; /* Для Firefox */
+    -ms-overflow-style: none;  /* Для IE/Edge */
+}
+
+.tryon-modal::-webkit-scrollbar {
+    display: none; /* Для Chrome/Safari: полностью скрываем полосу прокрутки */
+}
+
+.product-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  transition: border-color 0.2s;
+  /* Добавьте эти свойства: */
+  text-decoration: none; 
+  color: inherit;
+  cursor: pointer;
+}
+
+.product-card:hover {
+  border-color: var(--text);
+  background-color: var(--bubble-user); /* Необязательно: легкий подсвет при наведении */
 }
