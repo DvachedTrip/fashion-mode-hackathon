@@ -33,21 +33,52 @@ export default function Shop() {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
+  // Flatten nested category tree into a flat list
+  const flattenCategories = (cats) => {
+    const result = [];
+    const traverse = (items) => {
+      for (const cat of items) {
+        result.push({ id: cat.id, name: cat.name, slug: cat.slug });
+        if (cat.children && cat.children.length > 0) {
+          traverse(cat.children);
+        }
+      }
+    };
+    traverse(cats);
+    return result;
+  };
+
   useEffect(() => {
     fetch(`${API_BASE_URL}/categories/`)
       .then(res => res.json())
-      .then(data => setCategories(data))
+      .then(data => setCategories(flattenCategories(data)))
       .catch(err => console.error("Error categories:", err));
   }, []);
 
   useEffect(() => {
     setIsLoading(true);
-    let url = selectedCategory ? `${API_BASE_URL}/?category=${selectedCategory}` : `${API_BASE_URL}/`;
+    const baseUrl = selectedCategory ? `${API_BASE_URL}/?category=${selectedCategory}` : `${API_BASE_URL}/`;
     
-    fetch(url)
-      .then(res => res.json())
-      .then(data => setProducts(data.results || data))
-      .finally(() => setIsLoading(false));
+    const fetchAllProducts = async () => {
+      let allProducts = [];
+      let url = baseUrl;
+      try {
+        while (url) {
+          const res = await fetch(url);
+          const data = await res.json();
+          const items = data.results || data;
+          allProducts = [...allProducts, ...items];
+          url = data.next || null;
+        }
+        setProducts(allProducts);
+      } catch (err) {
+        console.error("Error loading products:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchAllProducts();
   }, [selectedCategory]);
   
 
