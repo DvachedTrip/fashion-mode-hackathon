@@ -4,11 +4,8 @@ import { Link } from 'react-router-dom';
 import styles from '../assets/css/Shop.module.css';
 import { useTheme } from '../components/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
-
 import Footer from '../pages/Footer'
-
 const API_BASE_URL = 'http://127.0.0.1:8000/api/products';
-
 const ghostVariants = {
   hidden: { opacity: 0, y: 20, filter: 'blur(10px)' },
   visible: { 
@@ -23,20 +20,15 @@ const ghostVariants = {
     transition: { duration: 0.3 } 
   }
 };
-
 export default function Shop() {
   const { theme } = useTheme();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-
-  // 1. Создаем отдельный стейт для ГЕРО-фотографий
   const [heroProducts, setHeroProducts] = useState([]);
   const [heroIndex, setHeroIndex] = useState(0);
-
   const [visibleCount, setVisibleCount] = useState(12);
-
   const flattenCategories = (cats) => {
     const result = [];
     const traverse = (items) => {
@@ -50,26 +42,21 @@ export default function Shop() {
     traverse(cats);
     return result;
   };
-
   useEffect(() => {
     fetch(`${API_BASE_URL}/categories/`)
       .then(res => res.json())
       .then(data => setCategories(flattenCategories(data)))
       .catch(err => console.error("Error categories:", err));
-    
-    // 2. Загружаем товары для Hero ОДИН РАЗ при загрузке страницы
     fetch(`${API_BASE_URL}/`)
       .then(res => res.json())
       .then(data => {
         const items = data.results || data;
-        setHeroProducts(items); // Эти данные больше не будут меняться при кликах
+        setHeroProducts(items); 
       });
   }, []);
-
   useEffect(() => {
     setIsLoading(true);
     const baseUrl = selectedCategory ? `${API_BASE_URL}/?category=${selectedCategory}` : `${API_BASE_URL}/`;
-    
     const fetchAllProducts = async () => {
       let allProducts = [];
       let url = baseUrl;
@@ -88,34 +75,25 @@ export default function Shop() {
         setIsLoading(false);
       }
     };
-    
     fetchAllProducts();
   }, [selectedCategory]);
-
-  // 3. Таймер теперь работает только с heroProducts и не зависит от фильтров
   useEffect(() => {
     if (heroProducts.length < 2) return;
-
     const interval = setInterval(() => {
       setHeroIndex((prevIndex) => {
         const nextIndex = prevIndex + 2;
         return nextIndex >= heroProducts.length ? 0 : nextIndex;
       });
-    }, 120000); // 2 минуты
-
+    }, 120000); 
     return () => clearInterval(interval);
   }, [heroProducts.length]);
-  
   useEffect(() => {
     setHeroIndex(0);
-    setVisibleCount(12); // Добавьте эту строку в существующий useEffect сброса
+    setVisibleCount(12); 
   }, [selectedCategory]);
-
-
   return (
     <div className={`${styles.wrapperShop} ${theme === 'dark' ? styles.dark : styles.light}`}>
       <Footer />
-
       <section className={styles.heroSection}>
         <div className={styles.heroPanel}>
           <div className={styles.heroBgImage1}></div>
@@ -123,8 +101,7 @@ export default function Shop() {
             <h1 className={styles.mainTitle}>ВЫБЕРИТЕ СВОЙ ОБРАЗ</h1>
           </div>
         </div>
-
-        {/* 4. Используем heroProducts вместо products — анимация только при смене по таймеру */}
+        {}
         <div className={styles.heroPanel}>
           <AnimatePresence mode="wait">
             {heroProducts[heroIndex] ? (
@@ -150,7 +127,6 @@ export default function Shop() {
             ) : null}
           </AnimatePresence>
         </div>
-        
         <div className={styles.heroPanel}>
           <AnimatePresence mode="wait">
             {heroProducts[heroIndex + 1] ? (
@@ -177,12 +153,10 @@ export default function Shop() {
           </AnimatePresence>
         </div>
       </section>
-      
-      {/* КАТАЛОГ ОДЕЖДЫ И ФИЛЬТРЫ — БЕЗ ИЗМЕНЕНИЙ */}
+      {}
       <section className={styles.heroTitle}>
         <h2>КАТАЛОГ ОДЕЖДЫ</h2>
       </section>
-
       <section className={styles.filters}>
         <div className={styles.filterLinks}>
           <a href="#" className={!selectedCategory ? styles.active : ''} 
@@ -200,8 +174,7 @@ export default function Shop() {
           ))}
         </div>
       </section>
-
-      {/* Product Grid */}
+      {}
       <main className={styles.productGrid}>
         <AnimatePresence mode="wait">
           {isLoading ? (
@@ -209,7 +182,7 @@ export default function Shop() {
           ) : products.length === 0 ? (
             <motion.div key="empty" className={styles.statusMessage}>Не найдено.</motion.div>
           ) : (
-            <div className={styles.gridContainer}> {/* Обертка для сетки и кнопки */}
+            <div className={styles.gridContainer}> {}
               <motion.div 
                 key={selectedCategory || 'all'}
                 className={styles.gridInner} 
@@ -218,7 +191,7 @@ export default function Shop() {
                 exit="exit"
                 variants={{ visible: { transition: { staggerChildren: 0.05 } } }}
               >
-                {/* Рендерим только часть массива */}
+                {}
                 {products.slice(0, visibleCount).map((product) => (
                   <motion.div key={product.id} variants={ghostVariants}>
                     <Link to={`/info/${product.id}`} className={styles.productCard}>
@@ -241,8 +214,7 @@ export default function Shop() {
                   </motion.div>
                 ))}
               </motion.div>
-
-              {/* Кнопка "Показать еще" */}
+              {}
               {products.length > visibleCount && (
                 <div className={styles.loadMoreContainer}>
                   <button 

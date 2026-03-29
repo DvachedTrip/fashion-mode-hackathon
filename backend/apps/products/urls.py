@@ -1,6 +1,5 @@
 from django.urls import path
 from .views import CategoryListView, TagListView, ProductViewSet
-
 urlpatterns = [
     path('categories/', CategoryListView.as_view(), name='category-list'),
     path('tags/', TagListView.as_view(), name='tag-list'),

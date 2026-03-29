@@ -1,11 +1,8 @@
 import os
 import django
-
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 django.setup()
-
 from apps.products.models import Color
-
 COLORS_TO_CREATE = [
     ("Черный", "#000000"),
     ("Белый", "#FFFFFF"),
@@ -22,7 +19,6 @@ COLORS_TO_CREATE = [
     ("Фиолетовый", "#800080"),
     ("Оранжевый", "#FFA500")
 ]
-
 print("Генерация цветов...")
 created_count = 0
 for color_name, hex_code in COLORS_TO_CREATE:
@@ -35,5 +31,4 @@ for color_name, hex_code in COLORS_TO_CREATE:
         print(f"  + Создан цвет: {color_name} ({hex_code})")
     else:
         print(f"  - Цвет уже есть: {color_name}")
-
 print(f"Успешно создано {created_count} новых цветов!")

@@ -1,7 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import styles from '../assets/css/PageLoader.module.css';
-
 const PageLoader = () => {
   return (
     <motion.div 
@@ -14,5 +13,4 @@ const PageLoader = () => {
     </motion.div>
   );
 };
-
 export default PageLoader;

@@ -1,13 +1,9 @@
 import styles from '../assets/css/Header.module.css';
 import { useCart } from '../components/CartContext';
 import { useTheme } from "../components/ThemeContext"
-
 export default function Header() {
-
     const { toggleCart } = useCart();
     const { theme, toggleTheme } = useTheme();
-    
-
     return (
         <header className={styles["header"]}>
             <div className={styles["header-left"]}>
@@ -15,11 +11,8 @@ export default function Header() {
                         <a href="/">AVISHU</a>
                     </div>
             </div>
-
-
             <div className={styles["header-mid"]}>
             </div>
-
             <div className={styles["header-right"]}>
                 <div className={styles["theme-toggle"]}>
                     [ 
@@ -41,7 +34,6 @@ export default function Header() {
                     ]
                 </div>
                 <a onClick={(e) => { e.preventDefault(); toggleCart(); }} href="#">AI</a>
-
             </div>
         </header>
     );

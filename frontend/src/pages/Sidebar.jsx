@@ -3,11 +3,8 @@ import { useCart } from '../components/CartContext';
 import { useTheme } from '../components/ThemeContext'; 
 import styles from '../assets/css/Sidebar.module.css';
 import { Link } from 'react-router-dom';
-
 const API_BASE_URL = 'http://127.0.0.1:8000/api/ai/chat';
 const TRYON_API_URL = 'http://127.0.0.1:8000/api/ai/tryon/';
-
-
 export default function Sidebar() {
     const { isCartOpen, closeCart } = useCart();
     const { theme } = useTheme(); 
@@ -15,7 +12,6 @@ export default function Sidebar() {
     const [messages, setMessages] = useState([]);
     const [sessionId, setSessionId] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-    
     const [isTryOnModalOpen, setIsTryOnModalOpen] = useState(false);
     const [tryOnProducts, setTryOnProducts] = useState([]);
     const [userPhoto, setUserPhoto] = useState(null);
@@ -24,61 +20,37 @@ export default function Sidebar() {
     const [tryOnResult, setTryOnResult] = useState(null);
     const [tryOnError, setTryOnError] = useState(null);
     const [tryOnItemCount, setTryOnItemCount] = useState(0);
-    
     const messagesEndRef = useRef(null);
     const fileInputRef = useRef(null);
     const pollingRef = useRef(null);
     const initializingRef = useRef(false);
     const isLoadingRef = useRef(false);
-
     const formatPrice = (price) => `${parseFloat(price).toLocaleString('ru-RU')} ₸`;
-
     const clearChat = () => {
-        // 1. Очищаем состояние в React
         setMessages([]); 
-        
-        // 2. Очищаем ВООБЩЕ ВСЁ из локальной памяти браузера
         localStorage.clear(); 
-        
-        // 3. Очищаем сессию (на всякий случай, если данные там)
         sessionStorage.clear();
-
         console.log("Чат и хранилище полностью очищены");
     };
-
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages, isLoading]);
-
     useEffect(() => {
         if (isCartOpen) {
-            // Блокируем прокрутку страницы
             document.body.style.overflow = 'hidden';
-            // Если у вас есть отступ справа из-за исчезновения скроллбара, можно добавить:
-            // document.body.style.paddingRight = '15px'; 
         } else {
-            // Возвращаем прокрутку
             document.body.style.overflow = 'unset';
-            // document.body.style.paddingRight = '0px';
         }
-
-        // Чистим эффект при размонтировании компонента (на всякий случай)
         return () => {
             document.body.style.overflow = 'unset';
         };
-    
     }, [isCartOpen]);
-
     useEffect(() => {
-        // Guard against double-init in React StrictMode
         if (!isCartOpen || sessionId || initializingRef.current) return;
-        
         let cancelled = false;
         initializingRef.current = true;
-
         const initSession = async () => {
             let currentSessionId = localStorage.getItem('chatSessionId');
-            
             const createNewSession = async () => {
                 try {
                     const res = await fetch(`${API_BASE_URL}/sessions/`, { method: 'POST' });
@@ -96,7 +68,6 @@ export default function Sidebar() {
                     console.error("Ошибка при создании сессии:", error);
                 }
             };
-
             if (!currentSessionId) {
                 await createNewSession();
             } else {
@@ -122,20 +93,16 @@ export default function Sidebar() {
                     console.error("Ошибка при загрузке истории:", error);
                 }
             }
-            
             if (!cancelled) {
                 initializingRef.current = false;
             }
         };
-
         initSession();
-        
         return () => {
             cancelled = true;
             initializingRef.current = false;
         };
     }, [isCartOpen, sessionId]);
-
     useEffect(() => {
         return () => {
             if (pollingRef.current) {
@@ -143,7 +110,6 @@ export default function Sidebar() {
             }
         };
     }, []);
-
     const handlePhotoUpload = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -151,7 +117,6 @@ export default function Sidebar() {
             setUserPhotoFile(file);
         }
     };
-
     const openTryOnModal = (products) => {
         setTryOnProducts(products);
         setUserPhoto(null);
@@ -161,7 +126,6 @@ export default function Sidebar() {
         setTryOnError(null);
         setIsTryOnModalOpen(true);
     };
-
     const closeTryOnModal = () => {
         setIsTryOnModalOpen(false);
         if (pollingRef.current) {
@@ -169,34 +133,27 @@ export default function Sidebar() {
             pollingRef.current = null;
         }
     };
-
     const startTryOn = async () => {
         if (!userPhotoFile || tryOnProducts.length === 0) return;
-        
         setTryOnStatus('uploading');
         setTryOnError(null);
         setTryOnItemCount(tryOnProducts.length);
-        
         const formData = new FormData();
         formData.append('session_key', sessionId);
         formData.append('user_photo', userPhotoFile);
         tryOnProducts.forEach(p => {
             formData.append('product_ids', p.id);
         });
-
         try {
             const res = await fetch(TRYON_API_URL, {
                 method: 'POST',
                 body: formData,
             });
-
             if (!res.ok) {
                 const errData = await res.json().catch(() => ({}));
                 throw new Error(errData.detail || errData.error_message || 'Ошибка при создании запроса');
             }
-
             const data = await res.json();
-            
             if (data.status === 'done' && data.result_image_url) {
                 setTryOnResult(data.result_image_url);
                 setTryOnStatus('done');
@@ -213,17 +170,13 @@ export default function Sidebar() {
             setTryOnStatus('failed');
         }
     };
-
     const startPolling = (requestId) => {
         if (pollingRef.current) clearInterval(pollingRef.current);
-        
         pollingRef.current = setInterval(async () => {
             try {
                 const res = await fetch(`${TRYON_API_URL}${requestId}/`);
                 if (!res.ok) return;
-                
                 const data = await res.json();
-                
                 if (data.status === 'done' && data.result_image_url) {
                     clearInterval(pollingRef.current);
                     pollingRef.current = null;
@@ -240,27 +193,21 @@ export default function Sidebar() {
             }
         }, 3000);
     };
-
     const handleSendMessage = async (e) => {
         e.preventDefault();
         const text = message.trim();
-        // Use ref for instant check to prevent double-submit race condition
         if (!text || !sessionId || isLoadingRef.current) return;
-
         isLoadingRef.current = true;
         setIsLoading(true);
-        
         const userMsg = { role: 'user', text: text };
         setMessages(prev => [...prev, userMsg]);
         setMessage("");
-
         try {
             const res = await fetch(`${API_BASE_URL}/sessions/${sessionId}/messages/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ text })
             });
-
             if (res.ok) {
                 const assistantMsg = await res.json();
                 setMessages(prev => [...prev, assistantMsg]);
@@ -281,14 +228,12 @@ export default function Sidebar() {
             setIsLoading(false);
         }
     };
-
     const renderTryOnModalContent = () => {
         if (tryOnStatus === 'done' && tryOnResult) {
             return (
                 <div className={styles["result-container"]}>
                     <div className={styles["result-badge"]}>ОБРАЗ ГОТОВ</div>
                     <img src={tryOnResult} alt="Результат примерки" className={styles["result-img"]} />
-                    
                     <div className={styles["modal-actions"]}>
                         <button 
                             className={styles["generate-btn"]}
@@ -314,7 +259,6 @@ export default function Sidebar() {
                 </div>
             );
         }
-
         if (tryOnStatus === 'uploading' || tryOnStatus === 'processing') {
             return (
                 <div className={styles["processing-container"]}>
@@ -333,7 +277,6 @@ export default function Sidebar() {
                 </div>
             );
         }
-
         if (tryOnStatus === 'failed') {
             return (
                 <div className={styles["processing-container"]}>
@@ -354,7 +297,6 @@ export default function Sidebar() {
                 </div>
             );
         }
-
         return (
             <>
                 <div className={styles["modal-products"]}>
@@ -379,9 +321,7 @@ export default function Sidebar() {
                         })}
                     </div>
                 </div>
-
                 <p>Загрузите свое фото в полный рост</p>
-                
                 <div 
                     className={styles["upload-area"]} 
                     onClick={() => fileInputRef.current.click()}
@@ -395,7 +335,6 @@ export default function Sidebar() {
                         </div>
                     )}
                 </div>
-                
                 <input 
                     type="file" 
                     ref={fileInputRef} 
@@ -403,13 +342,11 @@ export default function Sidebar() {
                     style={{ display: 'none' }} 
                     accept="image/*"
                 />
-
                 {tryOnError && (
                     <div className={styles["tryon-error"]}>
                         {tryOnError}
                     </div>
                 )}
-                
                 <div className={styles["modal-actions"]}>
                     <button 
                         className={styles["generate-btn"]}
@@ -431,14 +368,12 @@ export default function Sidebar() {
             </>
         );
     };
-
     return (
         <>
             <div 
                 className={`${styles["overlay"]} ${isCartOpen ? styles["active"] : ""} ${theme === 'dark' ? styles.dark : styles.light}`} 
                 onClick={closeCart}
             />
-            
             {isTryOnModalOpen && (
                 <div className={`${styles["tryon-modal-overlay"]} ${theme === 'dark' ? styles.dark : styles.light}`}>
                     <div className={styles["tryon-modal"]}>
@@ -452,7 +387,6 @@ export default function Sidebar() {
                     </div>
                 </div>
             )}
-
             <aside className={`
                 ${styles["sidebar"]} 
                 ${isCartOpen ? styles["open"] : ""} 
@@ -462,7 +396,6 @@ export default function Sidebar() {
                     <h2>AI STYLIST</h2>
                     <button onClick={closeCart} className={styles["close-btn"]}>✕</button>
                 </div>
-                
                 <div className={styles["sidebar-content"]}>
                     <div className={styles["chat-messages"]}>
                         {messages.map((msg, index) => (
@@ -471,7 +404,6 @@ export default function Sidebar() {
                                 className={msg.role === 'user' ? styles["message-user"] : styles["message-bot"]}
                             >
                                 <div className={styles["message-text"]}>{msg.text}</div>
-                                
                                 {msg.products && msg.products.length > 0 && (
                                     <>
                                         <div className={styles["product-list"]}>
@@ -479,14 +411,12 @@ export default function Sidebar() {
                                                 const imgUrl = p.main_image_url?.startsWith('http') 
                                                     ? p.main_image_url 
                                                     : `http://127.0.0.1:8000${p.main_image_url}`;
-                                                    
                                                 return (
-                                                    /* Обернули в Link и указали путь к info по id */
                                                     <Link 
                                                         to={`/info/${p.id}`} 
                                                         key={p.id} 
                                                         className={styles["product-card"]}
-                                                        onClick={closeCart} // Рекомендую закрывать сайдбар при переходе
+                                                        onClick={closeCart} 
                                                     >
                                                         <img 
                                                             src={imgUrl} 
@@ -522,7 +452,6 @@ export default function Sidebar() {
                         <div ref={messagesEndRef} />
                     </div>
                 </div>
-
                 <form className={styles["sidebar-footer"]} onSubmit={handleSendMessage}>
                     <input 
                         type="text" 
@@ -532,12 +461,11 @@ export default function Sidebar() {
                         onChange={(e) => setMessage(e.target.value)}
                         disabled={isLoading}
                     />
-                    {/* Этот контейнер мы сейчас стилизуем */}
+                    {}
                     <div className={styles["footer-buttons"]}>
                         <button type="submit" className={styles["send-btn"]}>
                             ОТПРАВИТЬ
                         </button>
-                        
                         <button 
                             type="button" 
                             className={styles["clear-btn"]} 
