@@ -319,3 +319,27 @@
   background-color: var(--dim-text);
   transform: rotate(-15deg);
 }
+
+/* Основной контейнер картинки */
+.mainImageWrapper {
+    width: 100%;
+    /* Высота должна быть фиксированной или рассчитанной, чтобы AnimatePresence работал корректно */
+    height: 70vh; /* Например, 70% высоты экрана */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background-color: transparent; /* Цвет фона, если фото на прозрачном фоне */
+    position: relative; /* Важно для наложения */
+}
+
+/* Стили для img внутри анимированного wrapper */
+.mainImageWrapper img {
+    position: absolute; /* AnimatePresence mode="wait" требует этого для плавности */
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain; /* Сохраняет пропорции без обрезки */
+    object-position: center;
+}

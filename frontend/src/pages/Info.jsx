@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import styles from '../assets/css/Info.module.css';
 // Импортируем стили магазина для сетки товаров внизу
 import shopStyles from '../assets/css/Shop.module.css'; 
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const API_BASE_URL = 'http://127.0.0.1:8000/api/products';
 
@@ -15,19 +15,33 @@ export default function Info() {
   const [selectedSize, setSelectedSize] = useState('');
   const [mainImage, setMainImage] = useState('');
 
-  // 1. Загрузка основного товара
   useEffect(() => {
-    window.scrollTo(0, 0); // Прокрутка вверх при переходе на новый товар
+    window.scrollTo(0, 0);
+    setLoading(true);
+
     fetch(`${API_BASE_URL}/${id}/`)
       .then(res => res.json())
       .then(data => {
         setProduct(data);
+        
         const getImageUrl = (url) => {
-            if (!url) return '';
-            return url.startsWith('http') ? url : `http://127.0.0.1:8000${url}`;
+          if (!url) return '';
+          return url.startsWith('http') ? url : `http://127.0.0.1:8000${url}`;
         };
-        const mainImg = data.images?.find(img => img.is_main);
-        setMainImage(mainImg ? getImageUrl(mainImg.image) : getImageUrl(data.images?.[0]?.image));
+
+        // ПРИОРЕТЕТ: 
+        // 1. Главное фото (is_main)
+        // 2. Первое фото из массива images
+        // 3. Прямая ссылка main_image_url (если есть в API)
+        const mainImgObj = data.images?.find(img => img.is_main) || data.images?.[0];
+        const fallbackUrl = data.main_image_url;
+
+        if (mainImgObj) {
+          setMainImage(getImageUrl(mainImgObj.image));
+        } else if (fallbackUrl) {
+          setMainImage(getImageUrl(fallbackUrl));
+        }
+
         setLoading(false);
       })
       .catch(err => {
@@ -82,7 +96,30 @@ export default function Info() {
 
         <div className={styles.midCol}>
             <div className={styles.mainImageWrapper}>
-                <img src={mainImage} alt={product.name} />
+                <AnimatePresence mode="wait"> {/* Гарантирует, что старая картинка исчезнет до появления новой */}
+                    <motion.img 
+                        // 1. Уникальный key — КРИТИЧЕСКИ ВАЖНО для анимации смены
+                        key={mainImage} 
+                        src={mainImage} 
+                        alt={product.name}
+                        
+                        // 2. Настройка анимации Framer Motion
+                        initial={{ opacity: 0, scale: 0.98, filter: 'blur(5px)' }} // Начало смены
+                        animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }} // Конец смены (видима)
+                        exit={{ opacity: 0, scale: 1.02, filter: 'blur(3px)' }} // Уход старой картинки
+                        
+                        // 3. Параметры перехода (Плавность)
+                        transition={{ 
+                            duration: 0.4, // Скорость анимации (0.4с)
+                            ease: [0.16, 1, 0.3, 1] // Кастомная кривая 'easeOutExpo' для мягкости
+                        }}
+                        
+                        // Защита от битых путей
+                        onError={(e) => {
+                            e.target.src = 'https://via.placeholder.com/800x1200?text=Image+Not+Found';
+                        }}
+                    />
+                </AnimatePresence>
             </div>
         </div>
 
