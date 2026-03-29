@@ -276,11 +276,7 @@ class KieTryOnService(BaseTryOnService):
     """
     Virtual try-on via Kie AI Market API using Nano Banana 2 (image editing model).
 
-    Flow:
-      1. Upload human image & garment image via base64 file upload API
-      2. Create a task with Nano Banana 2 using a try-on prompt + reference images
-      3. Poll task status until success/fail
-      4. Download the result image
+    Sends ALL clothing items + person photo in a SINGLE request.
     """
 
     def __init__(self):
@@ -293,7 +289,6 @@ class KieTryOnService(BaseTryOnService):
     # ── File upload (base64 → URL) ────────────────────────────
 
     def _upload_image(self, data_uri: str, filename: str = None) -> str:
-        """Upload a base64 data URI to Kie AI file storage, return download URL."""
         if not filename:
             filename = f"tryon_{uuid.uuid4().hex[:8]}.jpg"
 
@@ -322,37 +317,72 @@ class KieTryOnService(BaseTryOnService):
         logger.info(f"Kie: uploaded {filename} → {download_url}")
         return download_url
 
-    # ── Build try-on prompt ────────────────────────────────────
+    # ── Build combined try-on prompt ──────────────────────────
 
-    def _build_tryon_prompt(self, garment_des: str, category: str) -> str:
-        """Build a detailed prompt for the Nano Banana 2 model to perform virtual try-on."""
-        category_desc = {
-            "upper_body": "upper body garment (shirt, top, jacket, sweater)",
-            "lower_body": "lower body garment (pants, jeans, shorts, skirt)",
-            "dresses": "full-body dress or jumpsuit",
-        }
-        cat_text = category_desc.get(category, "clothing item")
+    def _build_combined_prompt(self, items: list) -> str:
+        items_description = []
+        for idx, item in enumerate(items):
+            product = item['product']
+            category = self._get_category(item)
+            cat_name = product.category.name if product.category else "garment"
+
+            category_desc = {
+                "upper_body": "верхняя часть тела (рубашка, футболка, куртка, свитер, худи, пальто)",
+                "lower_body": "нижняя часть тела (брюки, джинсы, шорты, юбка)",
+                "dresses": "цельная одежда (платье, комбинезон, сарафан)",
+            }
+            cat_text = category_desc.get(category, "одежда")
+
+            items_description.append(
+                f"  - Image {idx + 2}: \"{product.brand} {product.name}\" — "
+                f"категория: {cat_name} ({cat_text}). "
+                f"IMPORTANT: Even if this image shows a model wearing multiple items, "
+                f"extract and use ONLY the \"{product.name}\" ({cat_text}) from this image. "
+                f"Ignore any other clothing or accessories visible on the model in this reference photo."
+            )
+
+        items_list = "\n".join(items_description)
 
         return (
-            f"Virtual try-on: Take the person from the first image and dress them "
-            f"in the {cat_text} shown in the second image. "
-            f"The garment is: {garment_des}. "
-            f"Preserve the person's face, body proportions, pose, and background exactly. "
-            f"Replace only the {category.replace('_', ' ')} clothing with the garment from "
-            f"the reference image. The result should look like a natural, realistic photograph "
-            f"of the person wearing the new garment. Maintain lighting, shadows, and fabric drape. "
-            f"High quality, photorealistic result."
+            "STRICT VIRTUAL TRY-ON INSTRUCTION.\n\n"
+            "You are given a photo of a person (Image 1) and reference photos of specific clothing items "
+            f"(Images 2 through {len(items) + 1}).\n\n"
+            "TASK: Generate a single photorealistic image of the SAME person from Image 1 "
+            "wearing ALL of the specified clothing items simultaneously.\n\n"
+            "MANDATORY RULES — DO NOT VIOLATE ANY OF THESE:\n"
+            "1. FACE & IDENTITY: The person's face, hairstyle, skin tone, and ALL facial features "
+            "MUST remain 100% identical to Image 1. Zero alterations.\n"
+            "2. BODY & POSE: The person's body proportions, pose, stance, hand positions, and posture "
+            "MUST be preserved exactly as in Image 1.\n"
+            "3. BACKGROUND: The background, environment, floor, walls, and ALL surroundings "
+            "MUST remain completely unchanged from Image 1.\n"
+            "4. CLOTHING EXTRACTION: Each reference image may show a model wearing the garment. "
+            "You must identify and extract ONLY the specific garment named in the description below. "
+            "Ignore all other clothing, shoes, and accessories visible on the reference model.\n"
+            "5. CLOTHING ACCURACY: Each clothing item must precisely match the color, pattern, "
+            "texture, fabric weave, cut, silhouette, and design details of the corresponding reference image.\n"
+            "6. NATURAL FIT: The clothing must appear naturally worn on the person's body — "
+            "with realistic fabric drape, natural folds, proper shadows, wrinkles consistent with the pose, "
+            "and anatomically correct fit.\n"
+            "7. LIGHTING CONSISTENCY: Maintain the exact same lighting direction, intensity, shadows, "
+            "and color temperature as in Image 1.\n"
+            "8. NO ADDITIONS: Do not add any accessories, jewelry, shoes, bags, hats, or any items "
+            "not explicitly listed below.\n"
+            "9. PHOTOREALISM: The output must be indistinguishable from a real photograph. "
+            "No artistic filters, no cartoon effects, no visible AI artifacts.\n\n"
+            f"CLOTHING ITEMS TO APPLY:\n{items_list}\n\n"
+            "OUTPUT: A single photorealistic image of the person from Image 1 wearing all listed clothing items. "
+            "Preserve everything about the person except replace the relevant clothing zones."
         )
 
     # ── Create task ────────────────────────────────────────────
 
-    def _create_task(self, human_url: str, garment_url: str, prompt: str) -> str:
-        """Submit a Nano Banana 2 generation task. Returns task ID."""
+    def _create_task(self, image_urls: list, prompt: str) -> str:
         payload = {
             "model": "nano-banana-2",
             "input": {
                 "prompt": prompt,
-                "image_input": [human_url, garment_url],
+                "image_input": image_urls,
                 "aspect_ratio": "3:4",
                 "resolution": "1K",
                 "output_format": "jpg",
@@ -383,14 +413,8 @@ class KieTryOnService(BaseTryOnService):
     # ── Poll for result ────────────────────────────────────────
 
     def _poll_result(self, task_id: str, timeout: int = 600) -> str:
-        """
-        Poll Kie task status until success/fail.
-        Returns the first result URL on success.
-
-        Task states: waiting → queuing → generating → success | fail
-        """
         deadline = time.time() + timeout
-        poll_interval = 3  # start with 3s, increase with backoff
+        poll_interval = 3
 
         while time.time() < deadline:
             time.sleep(poll_interval)
@@ -432,41 +456,72 @@ class KieTryOnService(BaseTryOnService):
                 fail_code = data.get('failCode', '')
                 raise ValueError(f"Kie task {task_id} failed: [{fail_code}] {fail_msg}")
 
-            # Exponential backoff: 3 → 4 → 5 → ... max 10s
             poll_interval = min(poll_interval + 1, 10)
 
         raise TimeoutError(f"Kie task {task_id}: polling timeout ({timeout}s)")
 
-    # ── Main VTON call ─────────────────────────────────────────
+    # ── Override process_tryon: single request for all items ──
+
+    def process_tryon(self, tryon_request: TryOnRequest):
+        tryon_request.status = 'processing'
+        tryon_request.save(update_fields=['status'])
+
+        try:
+            items = self._get_product_items(tryon_request.product_ids)
+            if not items:
+                raise ValueError("Не найдены изображения товаров.")
+
+            descriptions = [
+                f"{self._build_garment_description(i)} [{self._get_category(i)}]"
+                for i in items
+            ]
+            tryon_request.prompt_used = f"KieTryOnService (single-request): " + " + ".join(descriptions)
+            tryon_request.save(update_fields=['prompt_used'])
+
+            human_data_uri = self._image_field_to_data_uri(tryon_request.user_photo)
+            human_url = self._upload_image(human_data_uri, f"human_{uuid.uuid4().hex[:8]}.jpg")
+            logger.info(f"Kie: uploaded human photo")
+
+            image_urls = [human_url]
+
+            for idx, item in enumerate(items):
+                garment_data_uri = self._image_field_to_data_uri(item['image'].image)
+                garment_url = self._upload_image(
+                    garment_data_uri,
+                    f"garment_{idx}_{uuid.uuid4().hex[:8]}.jpg"
+                )
+                image_urls.append(garment_url)
+                logger.info(f"Kie: uploaded garment {idx}: {item['product'].name}")
+
+            prompt = self._build_combined_prompt(items)
+            logger.info(f"Kie: creating single task with {len(image_urls)} images")
+
+            task_id = self._create_task(image_urls, prompt)
+
+            result_url = self._poll_result(task_id)
+
+            image_resp = http_requests.get(result_url, timeout=60)
+            image_resp.raise_for_status()
+
+            filename = f"tryon_result_{uuid.uuid4().hex[:12]}.jpg"
+            tryon_request.result_image.save(
+                filename,
+                ContentFile(image_resp.content),
+                save=False,
+            )
+            tryon_request.status = 'done'
+            tryon_request.save(update_fields=['status', 'result_image'])
+
+            logger.info(f"Kie: try-on complete, result={len(image_resp.content)} bytes")
+
+        except Exception as e:
+            logger.error(f"TryOn Error (KieTryOnService): {e}", exc_info=True)
+            tryon_request.status = 'failed'
+            tryon_request.error_message = str(e)
+            tryon_request.save(update_fields=['status', 'error_message'])
 
     def _run_vton(self, human_img: str, garm_img: str, garment_des: str, category: str) -> bytes:
-        """
-        Execute a single virtual try-on step via Kie AI Nano Banana 2.
-
-        1. Upload both images to Kie file storage (they need URLs, not data URIs)
-        2. Create a generation task with a try-on prompt
-        3. Poll until done
-        4. Download and return the result image bytes
-        """
-        logger.info(f"Kie VTON: applying '{garment_des}' [category={category}]")
-
-        # Step 1: Upload images
-        human_url = self._upload_image(human_img, f"human_{uuid.uuid4().hex[:8]}.jpg")
-        garment_url = self._upload_image(garm_img, f"garment_{uuid.uuid4().hex[:8]}.jpg")
-
-        # Step 2: Build prompt and create task
-        prompt = self._build_tryon_prompt(garment_des, category)
-        task_id = self._create_task(human_url, garment_url, prompt)
-
-        # Step 3: Poll for result
-        result_url = self._poll_result(task_id)
-
-        # Step 4: Download result image
-        image_resp = http_requests.get(result_url, timeout=60)
-        image_resp.raise_for_status()
-
-        logger.info(f"Kie VTON: done '{garment_des}', result={len(image_resp.content)} bytes")
-        return image_resp.content
+        raise NotImplementedError("KieTryOnService uses process_tryon() directly, not _run_vton()")
 
 
 # ══════════════════════════════════════════════════════════════
@@ -492,3 +547,4 @@ def get_tryon_service() -> BaseTryOnService:
 TryOnService = type('TryOnService', (), {
     '__new__': lambda cls: get_tryon_service(),
 })
+

@@ -30,9 +30,12 @@ class ProductContextBuilder:
 class GeminiChatService:
     def __init__(self):
         # Используем доступную для данного ключа модель
-        self.model = genai.GenerativeModel('gemini-2.5-flash')
+        self.model = genai.GenerativeModel(
+            'gemini-2.5-flash',
+            system_instruction=self._get_system_prompt()
+        )
     
-    def get_system_prompt(self):
+    def _get_system_prompt(self):
         catalog_json = ProductContextBuilder.get_catalog_json()
         return f"""Ты — стилист и модный ассистент интернет-магазина одежды.
 
@@ -44,7 +47,7 @@ class GeminiChatService:
 
 ОБЯЗАТЕЛЬНО возвращай ответ ТОЛЬКО в формате чистого JSON без лишнего текста (без символов ```json).
 {{
-  "message": "<Твой краткий совет стилиста на русском языке без 언급 названий и ID товаров>",
+  "message": "<Твой краткий совет стилиста на русском языке без упоминания названий и ID товаров>",
   "product_ids": [<id_1>, <id_2>]
 }}
 
@@ -57,18 +60,24 @@ class GeminiChatService:
         ChatMessage.objects.create(session=session, role='user', text=user_text)
         
         # Получаем историю 
-        history = ChatMessage.objects.filter(session=session).order_by('created_at')[:10]
+        history = ChatMessage.objects.filter(session=session).order_by('created_at')[:20]
         
-        # Готовим вызов
-        system_prompt = self.get_system_prompt()
-        contents = [{"role": "user", "parts": [system_prompt]}]
+        # Строим contents с правильным чередованием user/model
+        contents = []
+        last_role = None
         
         for msg in history:
             role = "user" if msg.role == "user" else "model"
-            contents.append({
-                "role": role, 
-                "parts": [msg.text]
-            })
+            
+            # Merge consecutive same-role messages to avoid alternation violations
+            if role == last_role and contents:
+                contents[-1]["parts"].append(msg.text)
+            else:
+                contents.append({
+                    "role": role, 
+                    "parts": [msg.text]
+                })
+                last_role = role
             
         try:
             response = self.model.generate_content(

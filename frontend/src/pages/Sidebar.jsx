@@ -27,6 +27,8 @@ export default function Sidebar() {
     const messagesEndRef = useRef(null);
     const fileInputRef = useRef(null);
     const pollingRef = useRef(null);
+    const initializingRef = useRef(false);
+    const isLoadingRef = useRef(false);
 
     const formatPrice = (price) => `${parseFloat(price).toLocaleString('ru-RU')} ₸`;
 
@@ -35,13 +37,19 @@ export default function Sidebar() {
     }, [messages, isLoading]);
 
     useEffect(() => {
+        // Guard against double-init in React StrictMode
+        if (!isCartOpen || sessionId || initializingRef.current) return;
+        
+        let cancelled = false;
+        initializingRef.current = true;
+
         const initSession = async () => {
             let currentSessionId = localStorage.getItem('chatSessionId');
             
             const createNewSession = async () => {
                 try {
                     const res = await fetch(`${API_BASE_URL}/sessions/`, { method: 'POST' });
-                    if (res.ok) {
+                    if (res.ok && !cancelled) {
                         const data = await res.json();
                         const newId = data.session_key;
                         localStorage.setItem('chatSessionId', newId);
@@ -61,6 +69,7 @@ export default function Sidebar() {
             } else {
                 try {
                     const res = await fetch(`${API_BASE_URL}/sessions/${currentSessionId}/messages/`);
+                    if (cancelled) return;
                     if (res.status === 404) {
                         localStorage.removeItem('chatSessionId');
                         await createNewSession();
@@ -80,11 +89,18 @@ export default function Sidebar() {
                     console.error("Ошибка при загрузке истории:", error);
                 }
             }
+            
+            if (!cancelled) {
+                initializingRef.current = false;
+            }
         };
 
-        if (isCartOpen && !sessionId) {
-            initSession();
-        }
+        initSession();
+        
+        return () => {
+            cancelled = true;
+            initializingRef.current = false;
+        };
     }, [isCartOpen, sessionId]);
 
     useEffect(() => {
@@ -195,12 +211,15 @@ export default function Sidebar() {
     const handleSendMessage = async (e) => {
         e.preventDefault();
         const text = message.trim();
-        if (!text || !sessionId || isLoading) return;
+        // Use ref for instant check to prevent double-submit race condition
+        if (!text || !sessionId || isLoadingRef.current) return;
 
+        isLoadingRef.current = true;
+        setIsLoading(true);
+        
         const userMsg = { role: 'user', text: text };
         setMessages(prev => [...prev, userMsg]);
         setMessage("");
-        setIsLoading(true);
 
         try {
             const res = await fetch(`${API_BASE_URL}/sessions/${sessionId}/messages/`, {
@@ -225,6 +244,7 @@ export default function Sidebar() {
                 text: "Проблема с сетью или сервером. Попробуйте попозже." 
             }]);
         } finally {
+            isLoadingRef.current = false;
             setIsLoading(false);
         }
     };
@@ -236,7 +256,6 @@ export default function Sidebar() {
                     <div className={styles["result-badge"]}>ОБРАЗ ГОТОВ</div>
                     <img src={tryOnResult} alt="Результат примерки" className={styles["result-img"]} />
                     
-                    {/* Группа кнопок после генерации */}
                     <div className={styles["modal-actions"]}>
                         <button 
                             className={styles["generate-btn"]}
@@ -263,11 +282,70 @@ export default function Sidebar() {
             );
         }
 
-        // ... (код состояний загрузки без изменений)
+        if (tryOnStatus === 'uploading' || tryOnStatus === 'processing') {
+            return (
+                <div className={styles["processing-container"]}>
+                    <div className={styles["processing-animation"]}>
+                        <div className={styles["spinner"]} />
+                    </div>
+                    <p className={styles["processing-text"]}>
+                        {tryOnStatus === 'uploading' ? 'ЗАГРУЖАЕМ ОБРАЗ...' : 'ГЕНЕРИРУЕМ ОБРАЗ...'}
+                    </p>
+                    <p className={styles["processing-steps"]}>
+                        {tryOnItemCount} {tryOnItemCount === 1 ? 'вещь' : tryOnItemCount < 5 ? 'вещи' : 'вещей'} в образе
+                    </p>
+                    <p className={styles["processing-hint"]}>
+                        Это может занять до 2 минут
+                    </p>
+                </div>
+            );
+        }
+
+        if (tryOnStatus === 'failed') {
+            return (
+                <div className={styles["processing-container"]}>
+                    <div className={styles["tryon-error"]}>
+                        {tryOnError || 'Произошла ошибка при генерации'}
+                    </div>
+                    <div className={styles["modal-actions"]}>
+                        <button 
+                            className={styles["generate-btn"]}
+                            onClick={() => {
+                                setTryOnStatus('idle');
+                                setTryOnError(null);
+                            }}
+                        >
+                            ПОПРОБОВАТЬ СНОВА
+                        </button>
+                    </div>
+                </div>
+            );
+        }
 
         return (
             <>
-                {/* ... (код списка продуктов без изменений) */}
+                <div className={styles["modal-products"]}>
+                    <p className={styles["modal-label"]}>Элементы образа</p>
+                    <div className={styles["modal-product-list"]}>
+                        {tryOnProducts.map(p => {
+                            const imgUrl = p.main_image_url?.startsWith('http') 
+                                ? p.main_image_url 
+                                : `http://127.0.0.1:8000${p.main_image_url}`;
+                            return (
+                                <div key={p.id} className={styles["modal-product-item"]}>
+                                    <img 
+                                        src={imgUrl} 
+                                        alt={p.name}
+                                        onError={(e) => { 
+                                            e.target.src = 'https://via.placeholder.com/70x88/f0f0f0/666666?text=No+Photo'; 
+                                        }}
+                                    />
+                                    <span>{p.brand} {p.name}</span>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
 
                 <p>Загрузите свое фото в полный рост</p>
                 
@@ -299,7 +377,6 @@ export default function Sidebar() {
                     </div>
                 )}
                 
-                {/* Группа кнопок в обычном состоянии */}
                 <div className={styles["modal-actions"]}>
                     <button 
                         className={styles["generate-btn"]}
