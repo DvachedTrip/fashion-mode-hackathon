@@ -32,7 +32,7 @@ db.sqlite3
 db.sqlite3-journal
 *.sqlite3
 media/
-backend/media/
+# backend/media/
 
 # Flask stuff (just in case):
 instance/
