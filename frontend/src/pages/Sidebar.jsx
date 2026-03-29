@@ -33,9 +33,40 @@ export default function Sidebar() {
 
     const formatPrice = (price) => `${parseFloat(price).toLocaleString('ru-RU')} ₸`;
 
+    const clearChat = () => {
+        // 1. Очищаем состояние в React
+        setMessages([]); 
+        
+        // 2. Очищаем ВООБЩЕ ВСЁ из локальной памяти браузера
+        localStorage.clear(); 
+        
+        // 3. Очищаем сессию (на всякий случай, если данные там)
+        sessionStorage.clear();
+
+        console.log("Чат и хранилище полностью очищены");
+    };
+
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages, isLoading]);
+
+    useEffect(() => {
+    if (isCartOpen) {
+        // Блокируем прокрутку страницы
+        document.body.style.overflow = 'hidden';
+        // Если у вас есть отступ справа из-за исчезновения скроллбара, можно добавить:
+        // document.body.style.paddingRight = '15px'; 
+    } else {
+        // Возвращаем прокрутку
+        document.body.style.overflow = 'unset';
+        // document.body.style.paddingRight = '0px';
+    }
+
+    // Чистим эффект при размонтировании компонента (на всякий случай)
+    return () => {
+        document.body.style.overflow = 'unset';
+    };
+}, [isCartOpen]);
 
     useEffect(() => {
         // Guard against double-init in React StrictMode
@@ -500,13 +531,20 @@ export default function Sidebar() {
                         onChange={(e) => setMessage(e.target.value)}
                         disabled={isLoading}
                     />
+                    {/* Этот контейнер мы сейчас стилизуем */}
                     <div className={styles["footer-buttons"]}>
+                        <button type="submit" className={styles["send-btn"]}>
+                            ОТПРАВИТЬ
+                        </button>
+                        
                         <button 
-                            type="submit" 
-                            className={styles["send-btn"]} 
-                            disabled={isLoading || !message.trim()}
+                            type="button" 
+                            className={styles["clear-btn"]} 
+                            onClick={clearChat}
                         >
-                            {isLoading ? "..." : "ОТПРАВИТЬ"}
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
                         </button>
                     </div>
                 </form>

@@ -108,7 +108,7 @@
 
 .footer-buttons {
   display: flex;
-  flex-direction: column;
+
   gap: 0;
 }
 
@@ -1014,4 +1014,158 @@
 .product-card:hover {
   border-color: var(--text);
   background-color: var(--bubble-user); /* Необязательно: легкий подсвет при наведении */
+}
+
+
+.footer-buttons {
+  display: flex;
+  gap: 10px; /* Отступ между кнопками */
+  align-items: stretch;
+}
+
+.send-btn {
+  flex: 1; /* Кнопка отправки занимает все свободное место */
+  padding: 15px;
+  background: var(--text);
+  color: var(--bg);
+  border: none;
+  font-weight: bold;
+  letter-spacing: 2px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.clear-btn {
+  width: 50px; /* Фиксированная ширина для квадрата */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.2s ease;
+}
+
+.clear-btn:hover {
+  background: #515151; /* Красный фон при наведении для индикации удаления */
+  color: white;
+  border-color: #323232;
+}
+
+/* Адаптив для мобильных (увеличим размер кнопки для удобства нажатия пальцем) */
+@media (max-width: 768px) {
+    .clear-btn {
+        width: 55px;
+        font-size: 20px;
+    }
+}
+
+
+/* Контейнер кнопок — теперь в один ряд */
+.footer-buttons {
+  display: flex;
+  gap: 10px; /* Отступ между кнопками */
+  align-items: stretch; /* Растягиваем их по высоте */
+}
+
+/* Кнопка ОТПРАВИТЬ — теперь она не занимает 100% принудительно, а гибко растягивается */
+.send-btn {
+  flex: 1; /* Кнопка занимает все свободное место слева от мусорки */
+  padding: 15px;
+  background: var(--text);
+  color: var(--bg);
+  border: none;
+  font-weight: bold;
+  letter-spacing: 2px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+/* Стили для кнопки МУСОРКА */
+.clear-btn {
+  width: 50px; /* Фиксированная ширина для квадрата */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.2s ease;
+  padding: 0; /* Убираем паддинги, чтобы иконка была по центру */
+}
+
+/* Красивый эффект при наведении для мусорки (индикация удаления) */
+.clear-btn:hover {
+  background: #2b2b2b; /* Красный фон */
+  color: white;
+  border-color: #3d3d3d;
+}
+
+/* Адаптив для мобильных — увеличим кнопку для удобства нажатия */
+@media (max-width: 768px) {
+    .clear-btn {
+        width: 55px;
+        font-size: 20px;
+    }
+}
+
+/* Контейнер для кнопок в одну линию */
+.footer-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+}
+
+.send-btn {
+    flex: 1;
+}
+
+/* Кнопка мусорки без красного цвета */
+.clear-btn {
+    width: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* Эффект наведения: полная инверсия темы */
+.clear-btn:hover {
+    background: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
+}
+
+.clear-btn:active {
+    transform: scale(0.9);
+}
+
+
+.sidebar-content {
+    flex: 1;
+    overflow-y: auto; /* Включает вертикальную прокрутку только внутри чата */
+    overflow-x: hidden;
+    padding: 20px;
+    
+    /* Стилизация скроллбара, чтобы он был аккуратным */
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+}
+
+/* Для Chrome/Safari/Edge */
+.sidebar-content::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar-content::-webkit-scrollbar-thumb {
+    background-color: var(--border);
+    border-radius: 10px;
 }
