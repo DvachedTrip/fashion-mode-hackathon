@@ -471,7 +471,6 @@ export default function Sidebar() {
                                             className={styles["tryon-btn"]}
                                             onClick={() => openTryOnModal(msg.products)}
                                         >
-                                            <span className={styles["tryon-btn-icon"]}>👗</span>
                                             ПРИМЕРИТЬ ОБРАЗ
                                         </button>
                                     </>

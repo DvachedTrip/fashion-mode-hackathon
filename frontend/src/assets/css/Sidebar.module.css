@@ -140,49 +140,56 @@
 }
 
 /* Кнопка примерки под сообщением */
+/* Кнопка примерки под сообщением */
 .tryon-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
   width: 100%;
   margin-top: 12px;
-  padding: 14px 20px;
+  padding: 16px 20px; /* Немного увеличим высоту для солидности */
   background: transparent;
   color: var(--text);
   border: 1px solid var(--border);
-  font-size: 10px;
+  font-size: 11px; /* Чуть крупнее для читаемости */
   font-weight: 700;
   letter-spacing: 2px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+              border-color 0.4s ease;
   text-transform: uppercase;
-  font-family: sans-serif;
+  font-family: inherit;
   position: relative;
   overflow: hidden;
+  z-index: 1;
 }
 
-.tryon-btn::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--text);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  z-index: 0;
-}
 
 .tryon-btn:hover::before {
-  transform: scaleX(1);
+  height: 100%; /* Заполняет всю кнопку при наведении */
 }
 
 .tryon-btn:hover {
-  color: var(--bg);
   border-color: var(--text);
 }
 
-.tryon-btn span,
+/* Убираем старые стили иконок, так как они больше не нужны */
+.tryon-btn span {
+  position: relative;
+  z-index: 2;
+  pointer-events: none; /* Чтобы клик шел по кнопке */
+}
+
+/* Адаптив для кнопки на мобильных устройствах */
+@media (max-width: 768px) {
+    .tryon-btn {
+        padding: 18px 20px;
+        font-size: 12px;
+        letter-spacing: 1.5px;
+    }
+}
+
+
 .tryon-btn-icon {
   position: relative;
   z-index: 1;
@@ -865,4 +872,107 @@
     background: var(--modal-text);
     color: var(--modal-bg);
     border-color: var(--modal-text);
+}
+
+
+
+
+
+
+/* ========================================
+   ОБНОВЛЕННОЕ МОДАЛЬНОЕ ОКНО (БЕЗ СКРОЛЛА ЭКРАНА)
+   ======================================== */
+
+.tryon-modal {
+    background: var(--modal-bg);
+    width: 95%;
+    max-width: 800px;
+    /* Уменьшаем максимальную высоту до 95vh и убираем внутренний overflow, 
+       чтобы скроллился только контент, если нужно */
+    max-height: 95vh; 
+    padding: 25px;
+    border: 1px solid var(--modal-border);
+    position: relative;
+    text-transform: uppercase;
+    font-family: sans-serif;
+    animation: modalSlideUp 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+    color: var(--modal-text);
+    
+    display: flex;
+    flex-direction: column;
+    /* Запрещаем модалке "раздуваться" */
+    overflow: hidden; 
+}
+
+/* Оборачиваем все содержимое тела в контейнер со скроллом, 
+   чтобы шапка всегда была на виду */
+.modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 5px; /* отступ для скроллбара */
+}
+
+/* Зона загрузки: делаем её более компактной */
+.upload-area {
+    width: 100%;
+    /* Вместо min-height 400px ставим более гибкие значения */
+    min-height: 250px; 
+    max-height: 45vh; /* Ограничиваем высоту зоны фото почти в половину экрана */
+    background: var(--modal-upload-bg);
+    border: 1px dashed var(--modal-border);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    margin-bottom: 15px;
+}
+
+/* Уменьшаем отступы в элементах образа */
+.modal-products {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--modal-border);
+}
+
+.modal-product-item img {
+    width: 100%;
+    height: 90px; /* Было 120px — уменьшаем для экономии места */
+    object-fit: cover;
+    border: 1px solid var(--modal-border);
+    margin-bottom: 5px;
+}
+
+.modal-product-item {
+    flex: 0 0 80px; /* Делаем карточки чуть уже */
+}
+
+/* Кнопки внизу */
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    margin-top: 15px;
+    padding-top: 10px;
+}
+
+.generate-btn {
+    padding: 15px; /* Уменьшаем внутренние отступы */
+    font-size: 10px;
+}
+
+/* --- Адаптив для мобилок (уменьшаем высоту еще сильнее) --- */
+@media (max-height: 700px) {
+    .upload-area {
+        max-height: 35vh;
+        min-height: 200px;
+    }
+    .modal-header {
+        margin-bottom: 15px;
+    }
+    .modal-product-item img {
+        height: 70px;
+    }
 }

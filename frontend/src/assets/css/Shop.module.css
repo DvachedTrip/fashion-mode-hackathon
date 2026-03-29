@@ -489,7 +489,7 @@
 }
 
 .loadMoreButton {
-  width: 200px;
+  width: 300px;
     background: none;
     border: 1px solid currentColor; /* Подстроится под тему (белый в dark, черный в light) */
     padding: 12px 40px;
